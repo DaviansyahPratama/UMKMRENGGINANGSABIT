@@ -1,25 +1,31 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router";
 import SignIn from "./pages/AuthPages/SignIn";
-import SignUp from "./pages/AuthPages/SignUp";
 import NotFound from "./pages/OtherPage/NotFound";
-import UserProfiles from "./pages/UserProfiles";
-import Videos from "./pages/UiElements/Videos";
-import Images from "./pages/UiElements/Images";
-import Alerts from "./pages/UiElements/Alerts";
-import Badges from "./pages/UiElements/Badges";
-import Avatars from "./pages/UiElements/Avatars";
-import Buttons from "./pages/UiElements/Buttons";
-import LineChart from "./pages/Charts/LineChart";
-import BarChart from "./pages/Charts/BarChart";
-import Calendar from "./pages/Calendar";
-import BasicTables from "./pages/Tables/BasicTables";
-import FormElements from "./pages/Forms/FormElements";
-import Blank from "./pages/Blank";
 import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
+import RequireOwner from "./components/auth/RequireOwner";
+import GuestHome from "./pages/Customer/GuestHome";
+import { useAuth } from "./context/AuthContext";
+
+import ModalPenjualan from "./pages/Owner/ModalPenjualan";
+import DistribusiStok from "./pages/Owner/DistribusiStok";
+import TransferOutlet from "./pages/Owner/TransferOutlet";
+import Keuntungan from "./pages/Owner/Keuntungan";
+import DashboardKeuntungan from "./pages/Owner/DashboardKeuntungan";
+import StatistikOutlet from "./pages/Owner/StatistikOutlet";
+import OutletManagement from "./pages/Owner/OutletManagement";
+import MenuManagement from "./pages/Owner/MenuManagement";
+
+import KatalogMenu from "./pages/Customer/KatalogMenu";
+import OutletLokasi from "./pages/Customer/OutletLokasi";
 
 export default function App() {
+  function RootIndexRoute() {
+    const { isOwnerAuthenticated } = useAuth();
+    return isOwnerAuthenticated ? <Home /> : <GuestHome />;
+  }
+
   return (
     <>
       <Router>
@@ -27,35 +33,85 @@ export default function App() {
         <Routes>
           {/* Dashboard Layout */}
           <Route element={<AppLayout />}>
-            <Route index path="/" element={<Home />} />
+            <Route
+              index
+              path="/"
+              element={<RootIndexRoute />}
+            />
 
-            {/* Others Page */}
-            <Route path="/profile" element={<UserProfiles />} />
-            <Route path="/calendar" element={<Calendar />} />
-            <Route path="/blank" element={<Blank />} />
+            {/* Owner (UMKM) */}
+            <Route
+              path="/owner/modal-penjualan"
+              element={
+                <RequireOwner>
+                  <ModalPenjualan />
+                </RequireOwner>
+              }
+            />
+            <Route
+              path="/owner/distribusi-stok"
+              element={
+                <RequireOwner>
+                  <DistribusiStok />
+                </RequireOwner>
+              }
+            />
+            <Route
+              path="/owner/transfer-outlet"
+              element={
+                <RequireOwner>
+                  <TransferOutlet />
+                </RequireOwner>
+              }
+            />
+            <Route
+              path="/owner/outlet-management"
+              element={
+                <RequireOwner>
+                  <OutletManagement />
+                </RequireOwner>
+              }
+            />
+            <Route
+              path="/owner/menu-management"
+              element={
+                <RequireOwner>
+                  <MenuManagement />
+                </RequireOwner>
+              }
+            />
+            <Route
+              path="/owner/keuntungan"
+              element={
+                <RequireOwner>
+                  <Keuntungan />
+                </RequireOwner>
+              }
+            />
+            <Route
+              path="/owner/dashboard-keuntungan"
+              element={
+                <RequireOwner>
+                  <DashboardKeuntungan />
+                </RequireOwner>
+              }
+            />
+            <Route
+              path="/owner/statistik-outlet"
+              element={
+                <RequireOwner>
+                  <StatistikOutlet />
+                </RequireOwner>
+              }
+            />
 
-            {/* Forms */}
-            <Route path="/form-elements" element={<FormElements />} />
-
-            {/* Tables */}
-            <Route path="/basic-tables" element={<BasicTables />} />
-
-            {/* Ui Elements */}
-            <Route path="/alerts" element={<Alerts />} />
-            <Route path="/avatars" element={<Avatars />} />
-            <Route path="/badge" element={<Badges />} />
-            <Route path="/buttons" element={<Buttons />} />
-            <Route path="/images" element={<Images />} />
-            <Route path="/videos" element={<Videos />} />
-
-            {/* Charts */}
-            <Route path="/line-chart" element={<LineChart />} />
-            <Route path="/bar-chart" element={<BarChart />} />
+            {/* Pelanggan (Guest) */}
+            <Route path="/menu" element={<KatalogMenu />} />
+            <Route path="/outlets" element={<OutletLokasi />} />
           </Route>
 
           {/* Auth Layout */}
           <Route path="/signin" element={<SignIn />} />
-          <Route path="/signup" element={<SignUp />} />
 
           {/* Fallback Route */}
           <Route path="*" element={<NotFound />} />

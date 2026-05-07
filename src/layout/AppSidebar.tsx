@@ -3,20 +3,15 @@ import { Link, useLocation } from "react-router";
 
 // Assume these icons are imported from an icon library
 import {
-  BoxCubeIcon,
-  CalenderIcon,
+  ChatIcon,
   ChevronDownIcon,
   GridIcon,
   HorizontaLDots,
-  ListIcon,
-  PageIcon,
-  PieChartIcon,
   PlugInIcon,
-  TableIcon,
-  UserCircleIcon,
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
+import { useAuth } from "../context/AuthContext";
 
 type NavItem = {
   name: string;
@@ -29,72 +24,40 @@ const navItems: NavItem[] = [
   {
     icon: <GridIcon />,
     name: "Dashboard",
-    subItems: [{ name: "Ecommerce", path: "/", pro: false }],
-  },
-  {
-    icon: <CalenderIcon />,
-    name: "Calendar",
-    path: "/calendar",
-  },
-  {
-    icon: <UserCircleIcon />,
-    name: "User Profile",
-    path: "/profile",
-  },
-  {
-    name: "Forms",
-    icon: <ListIcon />,
-    subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
-  },
-  {
-    name: "Tables",
-    icon: <TableIcon />,
-    subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
-  },
-  {
-    name: "Pages",
-    icon: <PageIcon />,
     subItems: [
-      { name: "Blank Page", path: "/blank", pro: false },
-      { name: "404 Error", path: "/error-404", pro: false },
+      { name: "Beranda", path: "/", pro: false },
+      { name: "Manajemen Katalog", path: "/owner/menu-management", pro: false },
+      { name: "Manajemen Outlet", path: "/owner/outlet-management", pro: false },
+      { name: "Modal Penjualan", path: "/owner/modal-penjualan", pro: false },
+      { name: "Distribusi Stok Outlet", path: "/owner/distribusi-stok", pro: false },
+      { name: "Transfer Outlet", path: "/owner/transfer-outlet", pro: false },
+      { name: "Perhitungan Keuntungan", path: "/owner/keuntungan", pro: false },
+      { name: "Dashboard Keuntungan", path: "/owner/dashboard-keuntungan", pro: false },
+      { name: "Statistik Outlet", path: "/owner/statistik-outlet", pro: false },
     ],
   },
 ];
 
 const othersItems: NavItem[] = [
   {
-    icon: <PieChartIcon />,
-    name: "Charts",
+    icon: <ChatIcon />,
+    name: "Pelanggan",
     subItems: [
-      { name: "Line Chart", path: "/line-chart", pro: false },
-      { name: "Bar Chart", path: "/bar-chart", pro: false },
-    ],
-  },
-  {
-    icon: <BoxCubeIcon />,
-    name: "UI Elements",
-    subItems: [
-      { name: "Alerts", path: "/alerts", pro: false },
-      { name: "Avatar", path: "/avatars", pro: false },
-      { name: "Badge", path: "/badge", pro: false },
-      { name: "Buttons", path: "/buttons", pro: false },
-      { name: "Images", path: "/images", pro: false },
-      { name: "Videos", path: "/videos", pro: false },
+      { name: "Katalog Menu", path: "/menu", pro: false },
+      { name: "Lokasi Outlet", path: "/outlets", pro: false },
     ],
   },
   {
     icon: <PlugInIcon />,
     name: "Authentication",
-    subItems: [
-      { name: "Sign In", path: "/signin", pro: false },
-      { name: "Sign Up", path: "/signup", pro: false },
-    ],
+    subItems: [{ name: "Sign In", path: "/signin", pro: false }],
   },
 ];
 
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const location = useLocation();
+  const { isOwnerAuthenticated } = useAuth();
 
   const [openSubmenu, setOpenSubmenu] = useState<{
     type: "main" | "others";
@@ -348,7 +311,21 @@ const AppSidebar: React.FC = () => {
                   <HorizontaLDots className="size-6" />
                 )}
               </h2>
-              {renderMenuItems(navItems, "main")}
+              {renderMenuItems(
+                navItems.map((nav) => {
+                  if (nav.name !== "Dashboard") return nav;
+                  return {
+                    ...nav,
+                    subItems: nav.subItems?.filter((s) => {
+                      if (!s.path) return true;
+                      if (s.path === "/") return true; // guest + owner landing
+                      // Owner-only menu
+                      return isOwnerAuthenticated ? s.path.startsWith("/owner/") : false;
+                    }),
+                  };
+                }),
+                "main"
+              )}
             </div>
             <div className="">
               <h2
@@ -364,7 +341,16 @@ const AppSidebar: React.FC = () => {
                   <HorizontaLDots />
                 )}
               </h2>
-              {renderMenuItems(othersItems, "others")}
+              {renderMenuItems(
+                othersItems.map((nav) => {
+                  if (nav.name !== "Authentication") return nav;
+                  return {
+                    ...nav,
+                    subItems: nav.subItems?.filter((s) => s.path === "/signin"),
+                  };
+                }),
+                "others"
+              )}
             </div>
           </div>
         </nav>
