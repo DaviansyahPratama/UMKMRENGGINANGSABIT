@@ -6,21 +6,12 @@ export default function SignIn() {
   return (
     <>
       <PageMeta
-<<<<<<< HEAD
         title="Sign In Admin | Rengginang Sabit"
         description="Halaman masuk eksklusif manajemen pusat UMKM Rengginang Sabit."
-=======
-        title="React.js SignIn Dashboard | TailAdmin - Next.js Admin Dashboard Template"
-        description="This is React.js SignIn Tables Dashboard page for TailAdmin - React.js Tailwind CSS Admin Dashboard Template"
->>>>>>> 508b9ac091cf0947dadfb565ee5f348825e79cbd
       />
       <AuthLayout>
         <SignInForm />
       </AuthLayout>
     </>
   );
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 508b9ac091cf0947dadfb565ee5f348825e79cbd

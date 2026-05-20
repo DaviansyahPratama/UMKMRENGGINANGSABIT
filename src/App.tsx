@@ -1,37 +1,22 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
 import { ScrollToTop } from "./components/common/ScrollToTop";
-
 import RequireOwner from "./components/auth/RequireOwner";
-
 import AppLayout from "./layout/AppLayout";
 import GuestLayout from "./layout/GuestLayout";
 
 /* ================================= */
 /* AUTH */
 /* ================================= */
-<<<<<<< HEAD
-=======
-
->>>>>>> 508b9ac091cf0947dadfb565ee5f348825e79cbd
 import SignIn from "./pages/AuthPages/SignIn";
 
 /* ================================= */
 /* ERROR PAGE */
 /* ================================= */
-<<<<<<< HEAD
-=======
-
->>>>>>> 508b9ac091cf0947dadfb565ee5f348825e79cbd
 import NotFound from "./pages/OtherPage/NotFound";
 
 /* ================================= */
 /* PUBLIC PAGES */
 /* ================================= */
-<<<<<<< HEAD
-=======
-
->>>>>>> 508b9ac091cf0947dadfb565ee5f348825e79cbd
 import LandingPage from "./pages/Public/LandingPage";
 import KatalogMenu from "./pages/Public/KatalogMenu";
 import OutletLokasi from "./pages/Public/OutletLokasi";
@@ -40,7 +25,6 @@ import KontakOwner from "./pages/Public/KontakOwner";
 /* ================================= */
 /* OWNER PAGES */
 /* ================================= */
-<<<<<<< HEAD
 import Home from "./pages/Dashboard/Home";
 import ModalPenjualan from "./pages/Owner/ModalPenjualan";
 import DistribusiStok from "./pages/Owner/DistribusiStok";
@@ -48,48 +32,20 @@ import TransferOutlet from "./pages/Owner/TransferOutlet";
 import Keuntungan from "./pages/Owner/Keuntungan";
 import DashboardKeuntungan from "./pages/Owner/DashboardKeuntungan";
 import StatistikOutlet from "./pages/Owner/StatistikOutlet";
-=======
-
-import Home from "./pages/Dashboard/Home";
-
-import ModalPenjualan from "./pages/Owner/ModalPenjualan";
-import DistribusiStok from "./pages/Owner/DistribusiStok";
-import TransferOutlet from "./pages/Owner/TransferOutlet";
-
-import Keuntungan from "./pages/Owner/Keuntungan";
-import DashboardKeuntungan from "./pages/Owner/DashboardKeuntungan";
-import StatistikOutlet from "./pages/Owner/StatistikOutlet";
-
->>>>>>> 508b9ac091cf0947dadfb565ee5f348825e79cbd
 import OutletManagement from "./pages/Owner/OutletManagement";
 import MenuManagement from "./pages/Owner/MenuManagement";
 
 export default function App() {
   return (
     <Router>
-<<<<<<< HEAD
       <ScrollToTop />
 
       <Routes>
         {/* ================================= */}
         {/* PUBLIC / LANDING PAGE (TAMPILAN GUEST) */}
         {/* ================================= */}
-        {/* Perubahan style full-screen, transparan, & tema gelap diatur dari dalam GuestLayout & LandingPage */}
         <Route element={<GuestLayout />}>
           
-=======
-
-      <ScrollToTop />
-
-      <Routes>
-
-        {/* ================================= */}
-        {/* PUBLIC / LANDING PAGE */}
-        {/* ================================= */}
-
-        <Route element={<GuestLayout />}>
-
->>>>>>> 508b9ac091cf0947dadfb565ee5f348825e79cbd
           {/* HOME */}
           <Route
             path="/"
@@ -117,14 +73,8 @@ export default function App() {
         </Route>
 
         {/* ================================= */}
-<<<<<<< HEAD
         {/* OWNER / ADMIN (TAMPILAN DASHBOARD) */}
         {/* ================================= */}
-=======
-        {/* OWNER / ADMIN */}
-        {/* ================================= */}
-
->>>>>>> 508b9ac091cf0947dadfb565ee5f348825e79cbd
         <Route element={<AppLayout />}>
 
           {/* DASHBOARD */}
@@ -222,10 +172,6 @@ export default function App() {
         {/* ================================= */}
         {/* AUTH */}
         {/* ================================= */}
-<<<<<<< HEAD
-=======
-
->>>>>>> 508b9ac091cf0947dadfb565ee5f348825e79cbd
         <Route
           path="/signin"
           element={<SignIn />}
@@ -234,20 +180,12 @@ export default function App() {
         {/* ================================= */}
         {/* NOT FOUND */}
         {/* ================================= */}
-<<<<<<< HEAD
-=======
-
->>>>>>> 508b9ac091cf0947dadfb565ee5f348825e79cbd
         <Route
           path="*"
           element={<NotFound />}
         />
 
       </Routes>
-<<<<<<< HEAD
-=======
-
->>>>>>> 508b9ac091cf0947dadfb565ee5f348825e79cbd
     </Router>
   );
 }

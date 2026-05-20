@@ -75,7 +75,6 @@ export default function StokOutlet() {
         description="Informasi stok total yang sudah dikirim ke setiap outlet."
       />
 
-<<<<<<< HEAD
       {/* Menggunakan bg-black & padding top agar konsisten di bawah navbar transparan */}
       <div className="space-y-6 bg-black text-white min-h-screen pt-28 px-6 pb-20">
         
@@ -86,19 +85,11 @@ export default function StokOutlet() {
         <div className="rounded-none border border-white/10 bg-white/[0.02] p-6 max-w-5xl mx-auto shadow-2xl">
           
           <p className="text-sm text-gray-400 leading-relaxed">
-=======
-      <div className="space-y-6">
-        <PageBreadcrumb pageTitle="Stok Outlet (Guest)" />
-
-        <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] p-6">
-          <p className="text-sm text-gray-500 dark:text-gray-400">
->>>>>>> 508b9ac091cf0947dadfb565ee5f348825e79cbd
             Halaman ini hanya menampilkan informasi stok yang sudah dikirim ke
             outlet (read-only). Manajemen stok dan keuangan hanya dapat
             diakses oleh Owner setelah login.
           </p>
 
-<<<<<<< HEAD
           {/* Sorotan total stok menggunakan warna Emas logo agar terkesan informatif & premium */}
           <div className="mt-4 text-sm text-gray-300">
             Total seluruh stok terdistribusi:{" "}
@@ -113,46 +104,23 @@ export default function StokOutlet() {
                   <TableCell
                     isHeader
                     className="py-3.5 text-xs font-bold uppercase tracking-wider text-gray-300"
-=======
-          <div className="mt-4 text-sm text-gray-700 dark:text-gray-300">
-            Total seluruh stok terdistribusi:{" "}
-            <span className="font-semibold">{totalAll} pcs</span>
-          </div>
-
-          <div className="mt-5 overflow-x-auto">
-            <Table className="min-w-[680px]">
-              <TableHeader>
-                <TableRow>
-                  <TableCell
-                    isHeader
-                    className="py-3 text-sm font-medium text-gray-500 dark:text-gray-400"
->>>>>>> 508b9ac091cf0947dadfb565ee5f348825e79cbd
                   >
                     Outlet
                   </TableCell>
                   <TableCell
                     isHeader
-<<<<<<< HEAD
                     className="py-3.5 text-xs font-bold uppercase tracking-wider text-gray-300"
-=======
-                    className="py-3 text-sm font-medium text-gray-500 dark:text-gray-400"
->>>>>>> 508b9ac091cf0947dadfb565ee5f348825e79cbd
                   >
                     Total Stok (pcs)
                   </TableCell>
                   <TableCell
                     isHeader
-<<<<<<< HEAD
                     className="py-3.5 text-xs font-bold uppercase tracking-wider text-gray-300"
-=======
-                    className="py-3 text-sm font-medium text-gray-500 dark:text-gray-400"
->>>>>>> 508b9ac091cf0947dadfb565ee5f348825e79cbd
                   >
                     Tanggal Distribusi Terakhir
                   </TableCell>
                 </TableRow>
               </TableHeader>
-<<<<<<< HEAD
               
               <TableBody className="divide-y divide-white/5">
                 {rows.length === 0 ? (
@@ -161,21 +129,12 @@ export default function StokOutlet() {
                       className="py-8 text-center text-sm text-gray-500"
                       isHeader={false}
                       colSpan={3} // Menyesuaikan agar teks empty state memenuhi 3 kolom tabel
-=======
-              <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
-                {rows.length === 0 ? (
-                  <TableRow>
-                    <TableCell
-                      className="py-8 text-center text-gray-500 dark:text-gray-300"
-                      isHeader={false}
->>>>>>> 508b9ac091cf0947dadfb565ee5f348825e79cbd
                     >
                       Belum ada data distribusi stok.
                     </TableCell>
                   </TableRow>
                 ) : (
                   rows.map((r) => (
-<<<<<<< HEAD
                     <TableRow 
                       key={r.outletId}
                       className="border-b border-white/5 hover:bg-white/[0.02] transition duration-150"
@@ -188,16 +147,6 @@ export default function StokOutlet() {
                         {r.totalQuantity}
                       </TableCell>
                       <TableCell className="py-4 text-sm text-gray-400">
-=======
-                    <TableRow key={r.outletId}>
-                      <TableCell className="py-3 text-gray-800 dark:text-white/90">
-                        {r.outletName}
-                      </TableCell>
-                      <TableCell className="py-3 text-gray-700 dark:text-gray-300">
-                        {r.totalQuantity}
-                      </TableCell>
-                      <TableCell className="py-3 text-gray-700 dark:text-gray-300">
->>>>>>> 508b9ac091cf0947dadfb565ee5f348825e79cbd
                         {r.lastDate ?? "-"}
                       </TableCell>
                     </TableRow>
@@ -206,7 +155,6 @@ export default function StokOutlet() {
               </TableBody>
             </Table>
           </div>
-<<<<<<< HEAD
 
         </div>
 
@@ -214,11 +162,3 @@ export default function StokOutlet() {
     </>
   );
 }
-=======
-        </div>
-      </div>
-    </>
-  );
-}
-
->>>>>>> 508b9ac091cf0947dadfb565ee5f348825e79cbd
