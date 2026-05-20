@@ -1,30 +1,49 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import SignIn from "./pages/AuthPages/SignIn";
-import NotFound from "./pages/OtherPage/NotFound";
-
-import AppLayout from "./layout/AppLayout";
-import GuestLayout from "./layout/GuestLayout";
-
 import { ScrollToTop } from "./components/common/ScrollToTop";
 
 import RequireOwner from "./components/auth/RequireOwner";
 
-/* OWNER */
+import AppLayout from "./layout/AppLayout";
+import GuestLayout from "./layout/GuestLayout";
+
+/* ================================= */
+/* AUTH */
+/* ================================= */
+
+import SignIn from "./pages/AuthPages/SignIn";
+
+/* ================================= */
+/* ERROR PAGE */
+/* ================================= */
+
+import NotFound from "./pages/OtherPage/NotFound";
+
+/* ================================= */
+/* PUBLIC PAGES */
+/* ================================= */
+
+import LandingPage from "./pages/Public/LandingPage";
+import KatalogMenu from "./pages/Public/KatalogMenu";
+import OutletLokasi from "./pages/Public/OutletLokasi";
+import KontakOwner from "./pages/Public/KontakOwner";
+
+/* ================================= */
+/* OWNER PAGES */
+/* ================================= */
+
 import Home from "./pages/Dashboard/Home";
+
 import ModalPenjualan from "./pages/Owner/ModalPenjualan";
 import DistribusiStok from "./pages/Owner/DistribusiStok";
 import TransferOutlet from "./pages/Owner/TransferOutlet";
+
 import Keuntungan from "./pages/Owner/Keuntungan";
 import DashboardKeuntungan from "./pages/Owner/DashboardKeuntungan";
 import StatistikOutlet from "./pages/Owner/StatistikOutlet";
+
 import OutletManagement from "./pages/Owner/OutletManagement";
 import MenuManagement from "./pages/Owner/MenuManagement";
-
-/* PUBLIC */
-import GuestHome from "./pages/Public/GuestHome";
-import KatalogMenu from "./pages/Public/KatalogMenu";
-import OutletLokasi from "./pages/Public/OutletLokasi";
 
 export default function App() {
   return (
@@ -35,32 +54,44 @@ export default function App() {
       <Routes>
 
         {/* ================================= */}
-        {/* PUBLIC / GUEST */}
+        {/* PUBLIC / LANDING PAGE */}
         {/* ================================= */}
+
         <Route element={<GuestLayout />}>
 
+          {/* HOME */}
           <Route
             path="/"
-            element={<GuestHome />}
+            element={<LandingPage />}
           />
 
+          {/* KATALOG */}
           <Route
             path="/menu"
             element={<KatalogMenu />}
           />
 
+          {/* OUTLET */}
           <Route
             path="/outlets"
             element={<OutletLokasi />}
           />
 
+          {/* KONTAK */}
+          <Route
+            path="/kontak"
+            element={<KontakOwner />}
+          />
+
         </Route>
 
         {/* ================================= */}
-        {/* ADMIN / OWNER */}
+        {/* OWNER / ADMIN */}
         {/* ================================= */}
+
         <Route element={<AppLayout />}>
 
+          {/* DASHBOARD */}
           <Route
             path="/dashboard"
             element={
@@ -70,6 +101,7 @@ export default function App() {
             }
           />
 
+          {/* MODAL PENJUALAN */}
           <Route
             path="/owner/modal-penjualan"
             element={
@@ -79,6 +111,7 @@ export default function App() {
             }
           />
 
+          {/* DISTRIBUSI STOK */}
           <Route
             path="/owner/distribusi-stok"
             element={
@@ -88,6 +121,7 @@ export default function App() {
             }
           />
 
+          {/* TRANSFER OUTLET */}
           <Route
             path="/owner/transfer-outlet"
             element={
@@ -97,6 +131,7 @@ export default function App() {
             }
           />
 
+          {/* OUTLET MANAGEMENT */}
           <Route
             path="/owner/outlet-management"
             element={
@@ -106,6 +141,7 @@ export default function App() {
             }
           />
 
+          {/* MENU MANAGEMENT */}
           <Route
             path="/owner/menu-management"
             element={
@@ -115,6 +151,7 @@ export default function App() {
             }
           />
 
+          {/* KEUNTUNGAN */}
           <Route
             path="/owner/keuntungan"
             element={
@@ -124,6 +161,7 @@ export default function App() {
             }
           />
 
+          {/* DASHBOARD KEUNTUNGAN */}
           <Route
             path="/owner/dashboard-keuntungan"
             element={
@@ -133,6 +171,7 @@ export default function App() {
             }
           />
 
+          {/* STATISTIK OUTLET */}
           <Route
             path="/owner/statistik-outlet"
             element={
@@ -144,13 +183,19 @@ export default function App() {
 
         </Route>
 
+        {/* ================================= */}
         {/* AUTH */}
+        {/* ================================= */}
+
         <Route
           path="/signin"
           element={<SignIn />}
         />
 
+        {/* ================================= */}
         {/* NOT FOUND */}
+        {/* ================================= */}
+
         <Route
           path="*"
           element={<NotFound />}

@@ -1,49 +1,69 @@
-import PageBreadcrumb from "../../components/common/PageBreadCrumb";
 import PageMeta from "../../components/common/PageMeta";
 import Button from "../../components/ui/button/Button";
-import { Link } from "react-router";
 
 const WHATSAPP_URL =
-  "https://wa.me/628123456789?text=Halo%20Owner%2C%20saya%20ingin%20bertanya%20atau%20pesan%20rengginang.";
+  "https://wa.me/628123456789?text=Halo%20Owner%20Rengginang%20Sabit%2C%20saya%20ingin%20bertanya%20tentang%20produk.";
 
 export default function KontakOwner() {
   return (
     <>
       <PageMeta
-        title="Kontak Owner | UMKM Rengginang Sabit"
-        description="Hubungi Owner melalui WhatsApp untuk bertanya atau melakukan pemesanan."
+        title="Kontak Owner | Rengginang Sabit"
+        description="Hubungi owner Rengginang Sabit."
       />
-      <div className="space-y-6">
-        <PageBreadcrumb pageTitle="Kontak Owner (KF11)" />
 
-        <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] p-6">
-          <h3 className="text-base font-semibold text-gray-800 dark:text-white/90">
-            Kontak WhatsApp Owner
-          </h3>
-          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-            Klik tombol di bawah untuk menghubungkan Anda dengan WhatsApp Owner.
+      <div className="space-y-14">
+
+        <section className="text-center">
+
+          <span className="rounded-full bg-green-100 px-4 py-2 text-sm font-semibold text-green-700">
+            Kontak Owner
+          </span>
+
+          <h1 className="mt-6 text-5xl font-extrabold text-gray-800 dark:text-white">
+            Hubungi Kami
+          </h1>
+
+          <p className="mt-5 text-gray-500 dark:text-gray-400">
+            Hubungi owner untuk pemesanan ataupun informasi produk.
           </p>
 
-          <div className="mt-6 flex flex-col sm:flex-row gap-3 sm:items-center">
+        </section>
+
+        <section className="mx-auto max-w-2xl rounded-3xl bg-white p-10 text-center shadow-xl dark:bg-white/[0.03]">
+
+          <div className="text-7xl">
+            📱
+          </div>
+
+          <h2 className="mt-6 text-3xl font-bold text-gray-800 dark:text-white">
+            WhatsApp Owner
+          </h2>
+
+          <p className="mt-4 text-gray-500 dark:text-gray-400">
+            Klik tombol di bawah untuk terhubung langsung dengan owner.
+          </p>
+
+          <div className="mt-8">
+
             <Button
               size="md"
               onClick={() =>
-                window.open(WHATSAPP_URL, "_blank", "noopener,noreferrer")
+                window.open(
+                  WHATSAPP_URL,
+                  "_blank",
+                  "noopener,noreferrer"
+                )
               }
-              startIcon={<span className="inline-flex w-2 h-2 rounded-full bg-brand-500" />}
             >
-              Buka WhatsApp
+              Chat WhatsApp
             </Button>
-            <Link
-              to="/pemesanan"
-              className="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
-            >
-              Kembali ke Pemesanan Online
-            </Link>
+
           </div>
-        </div>
+
+        </section>
+
       </div>
     </>
   );
 }
-

@@ -1,86 +1,64 @@
 import PageMeta from "../../components/common/PageMeta";
 import Button from "../../components/ui/button/Button";
-
-const menus = [
-  {
-    name: "Rengginang Original",
-    desc: "Rengginang gurih dengan cita rasa tradisional khas nusantara.",
-    price: "Rp 15.000",
-    icon: "🍘",
-  },
-  {
-    name: "Rengginang Pedas",
-    desc: "Perpaduan rasa gurih dan pedas yang bikin nagih.",
-    price: "Rp 18.000",
-    icon: "🌶️",
-  },
-  {
-    name: "Rengginang Balado",
-    desc: "Taburan bumbu balado dengan rasa khas Indonesia.",
-    price: "Rp 20.000",
-    icon: "🔥",
-  },
-  {
-    name: "Rengginang BBQ",
-    desc: "Rasa modern dengan aroma barbeque lezat.",
-    price: "Rp 22.000",
-    icon: "🍖",
-  },
-];
+import product from "../../data/product";
 
 export default function KatalogMenu() {
   return (
     <>
       <PageMeta
-        title="Katalog Produk | Rengginang Sabit"
-        description="Katalog produk UMKM Rengginang Sabit."
+        title="Katalog Menu | Rengginang Sabit"
+        description="Daftar produk Rengginang Sabit"
       />
 
-      <div className="space-y-8">
+      <div className="space-y-14">
 
-        {/* HEADER */}
-        <div>
+        <section className="text-center">
 
-          <h1 className="text-4xl font-extrabold text-gray-800 dark:text-white">
-            Katalog Produk
+          <span className="rounded-full bg-amber-100 px-4 py-2 text-sm font-semibold text-amber-700">
+            Produk Premium
+          </span>
+
+          <h1 className="mt-6 text-5xl font-extrabold text-gray-800 dark:text-white">
+            Katalog Menu
           </h1>
 
-          <p className="mt-3 text-lg text-gray-500 dark:text-gray-400">
-            Nikmati berbagai varian rengginang premium favorit pelanggan.
+          <p className="mt-5 text-gray-500 dark:text-gray-400">
+            Pilihan rengginang premium khas nusantara.
           </p>
 
-        </div>
+        </section>
 
-        {/* GRID PRODUK */}
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
+        <section className="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3">
 
-          {menus.map((item) => (
+          {product.map((item) => (
             <div
-              key={item.name}
-              className="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-gray-800 dark:bg-white/[0.03]"
+              key={item.id}
+              className="group overflow-hidden rounded-3xl bg-white shadow-lg transition duration-300 hover:-translate-y-2 hover:shadow-2xl dark:bg-white/[0.03]"
             >
 
-              {/* IMAGE */}
-              <div className="flex h-52 items-center justify-center bg-amber-100">
-                <span className="text-7xl">
-                  {item.icon}
-                </span>
+              <div className="overflow-hidden">
+
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  className="h-72 w-full object-cover transition duration-500 group-hover:scale-110"
+                />
+
               </div>
 
-              {/* CONTENT */}
               <div className="p-6">
 
                 <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
                   {item.name}
                 </h2>
 
-                <p className="mt-3 text-sm leading-relaxed text-gray-500 dark:text-gray-400">
-                  {item.desc}
+                <p className="mt-3 text-gray-500 dark:text-gray-400">
+                  {item.description}
                 </p>
 
-                <div className="mt-5 flex items-center justify-between">
+                <div className="mt-6 flex items-center justify-between">
 
-                  <span className="text-xl font-bold text-amber-700">
+                  <span className="text-2xl font-extrabold text-amber-600">
                     {item.price}
                   </span>
 
@@ -95,7 +73,7 @@ export default function KatalogMenu() {
             </div>
           ))}
 
-        </div>
+        </section>
 
       </div>
     </>
