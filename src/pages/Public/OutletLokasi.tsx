@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import PageMeta from "../../components/common/PageMeta";
 
 // Data outlet resmi Rengginang Sabit
-// Data outlet resmi Rengginang Sabit
 const outlets = [
   {
     id: 1,
