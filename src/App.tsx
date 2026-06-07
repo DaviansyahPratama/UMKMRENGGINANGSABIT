@@ -3,6 +3,7 @@ import { ScrollToTop } from "./components/common/ScrollToTop";
 import RequireOwner from "./components/auth/RequireOwner";
 import AppLayout from "./layout/AppLayout";
 import GuestLayout from "./layout/GuestLayout";
+import ProductDetail from "./pages/Public/ProductDetail";
 
 /* ================================= */
 /* AUTH */
@@ -41,30 +42,33 @@ export default function App() {
       <ScrollToTop />
 
       <Routes>
+
         {/* ================================= */}
-        {/* PUBLIC / LANDING PAGE (TAMPILAN GUEST) */}
+        {/* PUBLIC / LANDING PAGE */}
         {/* ================================= */}
         <Route element={<GuestLayout />}>
-          
-          {/* HOME */}
+
           <Route
             path="/"
             element={<LandingPage />}
           />
 
-          {/* KATALOG */}
           <Route
             path="/menu"
             element={<KatalogMenu />}
           />
 
-          {/* OUTLET */}
+          {/* DETAIL PRODUK */}
+          <Route
+            path="/products/:id"
+            element={<ProductDetail />}
+          />
+
           <Route
             path="/outlets"
             element={<OutletLokasi />}
           />
 
-          {/* KONTAK */}
           <Route
             path="/kontak"
             element={<KontakOwner />}
@@ -73,11 +77,10 @@ export default function App() {
         </Route>
 
         {/* ================================= */}
-        {/* OWNER / ADMIN (TAMPILAN DASHBOARD) */}
+        {/* OWNER / ADMIN */}
         {/* ================================= */}
         <Route element={<AppLayout />}>
 
-          {/* DASHBOARD */}
           <Route
             path="/dashboard"
             element={
@@ -87,7 +90,6 @@ export default function App() {
             }
           />
 
-          {/* MODAL PENJUALAN */}
           <Route
             path="/owner/modal-penjualan"
             element={
@@ -97,7 +99,6 @@ export default function App() {
             }
           />
 
-          {/* DISTRIBUSI STOK */}
           <Route
             path="/owner/distribusi-stok"
             element={
@@ -107,7 +108,6 @@ export default function App() {
             }
           />
 
-          {/* TRANSFER OUTLET */}
           <Route
             path="/owner/transfer-outlet"
             element={
@@ -117,7 +117,6 @@ export default function App() {
             }
           />
 
-          {/* OUTLET MANAGEMENT */}
           <Route
             path="/owner/outlet-management"
             element={
@@ -127,7 +126,6 @@ export default function App() {
             }
           />
 
-          {/* MENU MANAGEMENT */}
           <Route
             path="/owner/menu-management"
             element={
@@ -137,7 +135,6 @@ export default function App() {
             }
           />
 
-          {/* KEUNTUNGAN */}
           <Route
             path="/owner/keuntungan"
             element={
@@ -147,7 +144,6 @@ export default function App() {
             }
           />
 
-          {/* DASHBOARD KEUNTUNGAN */}
           <Route
             path="/owner/dashboard-keuntungan"
             element={
@@ -157,7 +153,6 @@ export default function App() {
             }
           />
 
-          {/* STATISTIK OUTLET */}
           <Route
             path="/owner/statistik-outlet"
             element={

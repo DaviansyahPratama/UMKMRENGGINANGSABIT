@@ -13,128 +13,182 @@ export default function LandingPage() {
         description="UMKM Rengginang Sabit premium khas nusantara."
       />
 
-      <div className="w-full">
+      <div className="w-full bg-black text-white">
 
-        {/* HERO SECTION - Setinggi Layar Penuh (h-screen) & Melayang di Bawah Navbar */}
+        {/* HERO SECTION */}
         <section
           className="relative h-screen w-full bg-cover bg-center bg-no-repeat flex items-center justify-center"
           style={{
-            // Overlay hitam 70% agar teks putih tetap terbaca tajam di atas gambar background
             backgroundImage:
-              "linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1600&auto=format&fit=crop')",
+              "linear-gradient(rgba(0,0,0,.75), rgba(0,0,0,.75)), url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1600&auto=format&fit=crop')",
           }}
         >
-          {/* Panah Navigasi Slider Kiri */}
-          <button className="absolute left-6 top-1/2 -translate-y-1/2 text-white/30 hover:text-white text-3xl transition hidden md:block">
-            &#10094;
-          </button>
+          <div className="relative z-10 max-w-4xl mx-auto text-center px-6">
 
-          {/* Konten Hero Sentral */}
-          <div className="relative z-10 max-w-4xl mx-auto text-center px-6 flex flex-col items-center">
-            
-            {/* Badge - Menggunakan warna Emas logo (`#E2A929`) dengan latar transparan */}
-            <span className="inline-flex rounded-none bg-[#E2A929]/10 border border-[#E2A929]/30 px-4 py-1.5 text-xs font-bold tracking-widest uppercase text-[#E2A929] backdrop-blur">
+            <span className="inline-flex rounded-full bg-amber-100 px-5 py-2 text-sm font-semibold text-amber-700 shadow">
               100% Asli Ketan • Gurih & Renyah
             </span>
 
-            {/* Judul Utama - Kata "quality" diberi sentuhan warna Marun logo (`#611414`) */}
-            <h1 className="mt-6 text-4xl font-extrabold tracking-wide md:text-6xl lg:text-7xl text-white uppercase font-serif">
-              We Serve <span className="text-[#611414] italic font-light lowercase">quality</span>
-              <span className="block text-white mt-2">Rengginang Sabit</span>
+            <h1 className="mt-6 text-5xl md:text-6xl lg:text-7xl font-extrabold">
+              <span className="text-white">We Serve</span>{" "}
+              <span className="text-amber-400 italic">quality</span>
+
+              <span className="block mt-3 text-white">
+                Rengginang Sabit
+              </span>
             </h1>
 
-            <p className="mt-6 max-w-2xl text-sm md:text-lg leading-relaxed text-gray-300">
-              Nikmati rengginang premium dengan cita rasa tradisional nusantara. Renyahnya gigitan berpadu dengan resep warisan yang gurih, otentik, dan higienis.
+            <p className="mt-6 max-w-2xl mx-auto text-lg text-gray-300">
+              Nikmati rengginang premium dengan cita rasa tradisional
+              nusantara. Renyahnya gigitan berpadu dengan resep warisan
+              yang gurih, otentik, dan higienis.
             </p>
 
-            {/* Kelompok Tombol Kotak Tegas (`rounded-none`) */}
-            <div className="mt-10 flex flex-wrap justify-center gap-4 text-xs font-bold tracking-widest uppercase">
-              
-              {/* Tombol Utama disesuaikan ke warna Marun Logo */}
+            <div className="mt-10 flex flex-wrap justify-center gap-4">
+
               <a href="#produk">
-                <button className="rounded-none bg-[#611414] hover:bg-[#831c1c] text-white px-8 py-3.5 font-bold transition duration-300 shadow-lg tracking-widest uppercase">
+                <button className="rounded-xl bg-amber-400 hover:bg-amber-500 text-slate-900 px-8 py-3 font-bold transition shadow-lg">
                   Lihat Produk
                 </button>
               </a>
 
-              <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
-                <button className="rounded-none border border-white/40 px-8 py-3.5 font-semibold text-white transition hover:bg-white hover:text-black tracking-widest uppercase">
+              <a
+                href={WHATSAPP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <button className="rounded-xl border border-amber-400 px-8 py-3 font-semibold text-amber-400 transition hover:bg-amber-400 hover:text-slate-900">
                   WhatsApp
                 </button>
               </a>
 
             </div>
-          </div>
 
-          {/* Panah Navigasi Slider Kanan */}
-          <button className="absolute right-6 top-1/2 -translate-y-1/2 text-white/30 hover:text-white text-3xl transition hidden md:block">
-            &#10095;
-          </button>
+          </div>
         </section>
 
-
         {/* PRODUK SECTION */}
-        <section id="produk" className="max-w-7xl mx-auto px-4 py-24 sm:px-6 lg:px-8">
+        <section
+          id="produk"
+          className="py-24"
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-          <div className="text-center">
-            {/* Tag sub-judul menggunakan aksen emas logo */}
-            <span className="rounded-none bg-[#E2A929]/10 border border-[#E2A929]/30 px-4 py-2 text-xs font-bold uppercase tracking-widest text-[#E2A929]">
-              Produk Kami
-            </span>
-            <h2 className="mt-6 text-4xl font-extrabold text-gray-800 dark:text-white uppercase tracking-wider font-serif">
-              Katalog Produk
-            </h2>
-          </div>
+            <div className="text-center">
 
-          {/* Grid List Produk Kotak */}
-          <div className="mt-14 grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3">
-            {product.slice(0, 6).map((item) => (
-              <div
-                key={item.id}
-                className="group overflow-hidden rounded-none bg-white shadow-lg transition duration-300 hover:-translate-y-2 hover:shadow-2xl dark:bg-white/[0.03]"
-              >
-                <div className="overflow-hidden rounded-none">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="h-72 w-full object-cover transition duration-500 group-hover:scale-110"
-                  />
-                </div>
+              <span className="inline-block rounded-full bg-amber-100 px-5 py-2 text-sm font-semibold text-amber-700 shadow">
+                Produk Premium
+              </span>
 
-                <div className="p-6">
-                  <h3 className="text-2xl font-bold text-gray-800 dark:text-white">
-                    {item.name}
-                  </h3>
+              <h2 className="mt-6 text-5xl font-extrabold">
+                <span className="text-white">Katalog</span>{" "}
+                <span className="text-amber-400">Produk</span>
+              </h2>
 
-                  <p className="mt-3 text-gray-500 dark:text-gray-400">
-                    {item.description}
-                  </p>
+              <p className="mt-4 text-lg text-gray-300">
+                Pilihan rengginang premium khas nusantara.
+              </p>
 
-                  <div className="mt-6 flex items-center justify-between">
-                    {/* Harga menggunakan warna emas logo agar terlihat premium & stand out */}
-                    <span className="text-2xl font-extrabold text-[#E2A929]">
-                      {item.price}
-                    </span>
-                    
-                    {/* Tombol Detail Kartu Produk menggunakan warna Marun */}
-                    <button className="rounded-none bg-[#611414] hover:bg-[#831c1c] text-white px-4 py-2 text-xs font-bold uppercase tracking-wider transition">
-                      Detail
-                    </button>
+            </div>
+
+            <div className="mt-14 grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3">
+
+              {product.slice(0, 6).map((item) => (
+                <div
+                  key={item.id}
+                  className="
+                    group
+                    overflow-hidden
+                    rounded-3xl
+                    bg-slate-800
+                    border
+                    border-amber-400
+                    shadow-xl
+                    transition-all
+                    duration-300
+                    hover:-translate-y-2
+                    hover:shadow-amber-500/20
+                  "
+                >
+
+                  <div className="overflow-hidden">
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="
+                        h-72
+                        w-full
+                        object-cover
+                        transition
+                        duration-500
+                        group-hover:scale-110
+                      "
+                    />
                   </div>
+
+                  <div className="p-6">
+
+                    <h3 className="text-2xl font-bold text-white">
+                      {item.name}
+                    </h3>
+
+                    <p className="mt-3 text-gray-300">
+                      {item.description}
+                    </p>
+
+                    <div className="mt-6 flex items-center justify-between">
+
+                      <span className="text-3xl font-extrabold text-amber-400">
+                        {item.price}
+                      </span>
+
+                      <button
+                        className="
+                          rounded-xl
+                          bg-amber-400
+                          px-4
+                          py-2
+                          text-sm
+                          font-semibold
+                          text-slate-900
+                          transition
+                          hover:bg-amber-500
+                        "
+                      >
+                        Detail
+                      </button>
+
+                    </div>
+
+                  </div>
+
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
 
-          {/* Tombol Lihat Semua di bagian bawah */}
-          <div className="mt-12 text-center">
-            <Link to="/menu">
-              <button className="rounded-none bg-[#611414] hover:bg-[#831c1c] text-white px-8 py-3.5 font-bold transition tracking-widest uppercase">
-                Lihat Semua Produk
-              </button>
-            </Link>
-          </div>
+            </div>
 
+            <div className="mt-12 text-center">
+
+              <Link to="/menu">
+                <button
+                  className="
+                    rounded-xl
+                    bg-amber-400
+                    px-8
+                    py-3
+                    font-bold
+                    text-slate-900
+                    transition
+                    hover:bg-amber-500
+                  "
+                >
+                  Lihat Semua Produk
+                </button>
+              </Link>
+
+            </div>
+
+          </div>
         </section>
 
       </div>
