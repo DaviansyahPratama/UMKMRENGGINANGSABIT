@@ -4,6 +4,8 @@ import PageBreadcrumb from "../../components/common/PageBreadCrumb";
 import Label from "../../components/form/Label";
 import Input from "../../components/form/input/InputField";
 import Button from "../../components/ui/button/Button";
+import { useEffect } from "react";
+import api from "../../services/api";
 import {
   Table,
   TableBody,
@@ -11,14 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from "../../components/ui/table";
-import {
-  addMenuItem,
-  deleteMenuItem,
-  loadAppSettings,
-  loadMenuItems,
-  updateAppSettings,
-  updateMenuItem,
-} from "../../lib/umkmStorage";
+import { loadAppSettings, updateAppSettings } from "../../lib/umkmStorage";
 import { PlusIcon, TrashBinIcon } from "../../icons";
 
 function formatRupiah(n: number) {
@@ -31,7 +26,6 @@ function formatRupiah(n: number) {
 
 export default function MenuManagement() {
   const [refreshKey, setRefreshKey] = useState(0);
-  const menuItems = useMemo(() => loadMenuItems(), [refreshKey]);
   const settings = useMemo(() => loadAppSettings(), [refreshKey]);
 
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -40,12 +34,40 @@ export default function MenuManagement() {
   const [composition, setComposition] = useState("");
   const [price, setPrice] = useState<number | "">("");
   const [category, setCategory] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [bestSeller, setBestSeller] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const [ownerWhatsapp, setOwnerWhatsapp] = useState(settings.ownerWhatsapp);
   const [shopeeUrl, setShopeeUrl] = useState(settings.shopeeUrl);
+  const [menuItems, setMenuItems] = useState<any[]>([]);
+
+  useEffect(() => {
+    loadProducts();
+  }, []);
+
+  const loadProducts = async () => {
+    try {
+      const response = await api.get("/products");
+
+      const products = response.data.map((item: any) => ({
+        id: item.id,
+        name: item.name,
+        description: item.description,
+        composition: item.composition,
+        price: item.price,
+        category: item.category,
+        imageUrl: item.image_url
+          ? `http://127.0.0.1:8000/storage/${item.image_url}`
+          : "",
+        isBestSeller: item.is_best_seller,
+      }));
+
+      setMenuItems(products);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const resetForm = () => {
     setEditingId(null);
@@ -54,12 +76,12 @@ export default function MenuManagement() {
     setComposition("");
     setPrice("");
     setCategory("");
-    setImageUrl("");
+    setImageFile(null);
     setBestSeller(false);
     setError(null);
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError(null);
     if (!name.trim()) return setError("Nama menu wajib diisi.");
@@ -68,7 +90,9 @@ export default function MenuManagement() {
     if (price === "" || Number.isNaN(Number(price)) || Number(price) <= 0)
       return setError("Harga harus angka > 0.");
     if (!category.trim()) return setError("Kategori wajib diisi.");
-    if (!imageUrl.trim()) return setError("URL foto produk wajib diisi.");
+    if (!editingId && !imageFile) {
+      return setError("Foto produk wajib dipilih.");
+    }
 
     const payload = {
       name: name.trim(),
@@ -76,18 +100,56 @@ export default function MenuManagement() {
       composition: composition.trim(),
       price: Number(price),
       category: category.trim(),
-      imageUrl: imageUrl.trim(),
       isBestSeller: bestSeller,
     };
 
-    if (editingId) {
-      updateMenuItem(editingId, payload);
-    } else {
-      addMenuItem(payload);
-    }
+    try {
+      if (editingId) {
+        const formData = new FormData();
 
-    resetForm();
-    setRefreshKey((k) => k + 1);
+        formData.append("name", payload.name);
+        formData.append("description", payload.description);
+        formData.append("composition", payload.composition);
+        formData.append("price", payload.price.toString());
+        formData.append("category", payload.category);
+        formData.append("is_best_seller", payload.isBestSeller ? "1" : "0");
+
+        // hanya kirim gambar jika user memilih gambar baru
+        if (imageFile) {
+          formData.append("image", imageFile);
+        }
+
+        await api.post(`/products/${editingId}?_method=PUT`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+      } else {
+        const formData = new FormData();
+
+        formData.append("name", payload.name);
+        formData.append("description", payload.description);
+        formData.append("composition", payload.composition);
+        formData.append("price", payload.price.toString());
+        formData.append("category", payload.category);
+        formData.append("is_best_seller", payload.isBestSeller ? "1" : "0");
+
+        if (imageFile) {
+          formData.append("image", imageFile);
+        }
+        await api.post("/products", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+      }
+
+      await loadProducts();
+      resetForm();
+    } catch (error) {
+      console.error(error);
+      setError("Gagal menyimpan produk.");
+    }
   };
 
   const handleEdit = (id: string) => {
@@ -99,14 +161,15 @@ export default function MenuManagement() {
     setComposition(item.composition);
     setPrice(item.price);
     setCategory(item.category);
-    setImageUrl(item.imageUrl);
+    setImageFile(null);
     setBestSeller(!!item.isBestSeller);
   };
 
-  const handleDelete = (id: string, itemName: string) => {
+  const handleDelete = async (id: string, itemName: string) => {
     const ok = window.confirm(`Hapus menu "${itemName}"?`);
     if (!ok) return;
-    deleteMenuItem(id);
+    await api.delete(`/products/${id}`);
+    await loadProducts();
     setRefreshKey((k) => k + 1);
   };
 
@@ -138,7 +201,10 @@ export default function MenuManagement() {
             </div>
             <div>
               <Label>Link Shopee</Label>
-              <Input value={shopeeUrl} onChange={(e) => setShopeeUrl(e.target.value)} />
+              <Input
+                value={shopeeUrl}
+                onChange={(e) => setShopeeUrl(e.target.value)}
+              />
             </div>
           </div>
           <div className="mt-4">
@@ -158,15 +224,24 @@ export default function MenuManagement() {
               <form onSubmit={handleSubmit} className="mt-5 space-y-4">
                 <div>
                   <Label>Nama Menu</Label>
-                  <Input value={name} onChange={(e) => setName(e.target.value)} />
+                  <Input
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
                 </div>
                 <div>
                   <Label>Deskripsi</Label>
-                  <Input value={description} onChange={(e) => setDescription(e.target.value)} />
+                  <Input
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                  />
                 </div>
                 <div>
                   <Label>Komposisi</Label>
-                  <Input value={composition} onChange={(e) => setComposition(e.target.value)} />
+                  <Input
+                    value={composition}
+                    onChange={(e) => setComposition(e.target.value)}
+                  />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
@@ -175,18 +250,31 @@ export default function MenuManagement() {
                       type="number"
                       value={price}
                       onChange={(e) =>
-                        setPrice(e.target.value === "" ? "" : Number(e.target.value))
+                        setPrice(
+                          e.target.value === "" ? "" : Number(e.target.value),
+                        )
                       }
                     />
                   </div>
                   <div>
                     <Label>Kategori</Label>
-                    <Input value={category} onChange={(e) => setCategory(e.target.value)} />
+                    <Input
+                      value={category}
+                      onChange={(e) => setCategory(e.target.value)}
+                    />
                   </div>
                 </div>
                 <div>
-                  <Label>URL Foto Produk</Label>
-                  <Input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} />
+                  <Label>Upload Foto Produk</Label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      if (e.target.files?.[0]) {
+                        setImageFile(e.target.files[0]);
+                      }
+                    }}
+                  />
                 </div>
                 <label className="inline-flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                   <input
@@ -201,7 +289,11 @@ export default function MenuManagement() {
                   <Button className="flex-1" startIcon={<PlusIcon />}>
                     {editingId ? "Update" : "Simpan"}
                   </Button>
-                  <Button className="flex-1" variant="outline" onClick={resetForm}>
+                  <Button
+                    className="flex-1"
+                    variant="outline"
+                    onClick={resetForm}
+                  >
                     {editingId ? "Batal Edit" : "Reset"}
                   </Button>
                 </div>
@@ -218,11 +310,21 @@ export default function MenuManagement() {
                 <Table className="min-w-[900px]">
                   <TableHeader>
                     <TableRow>
-                      <TableCell isHeader className="py-3">Menu</TableCell>
-                      <TableCell isHeader className="py-3">Kategori</TableCell>
-                      <TableCell isHeader className="py-3">Harga</TableCell>
-                      <TableCell isHeader className="py-3">Status</TableCell>
-                      <TableCell isHeader className="py-3">Aksi</TableCell>
+                      <TableCell isHeader className="py-3">
+                        Menu
+                      </TableCell>
+                      <TableCell isHeader className="py-3">
+                        Kategori
+                      </TableCell>
+                      <TableCell isHeader className="py-3">
+                        Harga
+                      </TableCell>
+                      <TableCell isHeader className="py-3">
+                        Status
+                      </TableCell>
+                      <TableCell isHeader className="py-3">
+                        Aksi
+                      </TableCell>
                     </TableRow>
                   </TableHeader>
                   <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
@@ -256,7 +358,11 @@ export default function MenuManagement() {
                         </TableCell>
                         <TableCell className="py-3">
                           <div className="flex gap-2">
-                            <Button variant="outline" size="sm" onClick={() => handleEdit(m.id)}>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleEdit(m.id)}
+                            >
                               Edit
                             </Button>
                             <Button
@@ -281,4 +387,3 @@ export default function MenuManagement() {
     </>
   );
 }
-

@@ -1,23 +1,52 @@
 import { useEffect, useState } from "react";
 import PageMeta from "../../components/common/PageMeta";
 import Button from "../../components/ui/button/Button";
-import product from "../../data/product";
+import api from "../../services/api";
 
 export default function KatalogMenu() {
   const [query, setQuery] = useState("");
-  const [filteredMenu, setFilteredMenu] = useState(product);
+  const [menuItems, setMenuItems] = useState<any[]>([]);
+  const [filteredMenu, setFilteredMenu] = useState<any[]>([]);
+
+  const loadProducts = async () => {
+    try {
+      const response = await api.get("/products");
+
+      const products = response.data.map((item: any) => ({
+        id: item.id,
+        name: item.name,
+        description: item.description,
+        composition: item.composition,
+        category: item.category,
+        price: item.price,
+        image: item.image_url
+          ? `http://127.0.0.1:8000/storage/${item.image_url}`
+          : "",
+        isBestSeller: item.is_best_seller,
+      }));
+
+      setMenuItems(products);
+      setFilteredMenu(products);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    loadProducts();
+  }, []);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      const result = product.filter((item) =>
-        item.name.toLowerCase().includes(query.toLowerCase())
+      const result = menuItems.filter((item) =>
+        item.name.toLowerCase().includes(query.toLowerCase()),
       );
 
       setFilteredMenu(result);
     }, 500);
 
     return () => clearTimeout(timeout);
-  }, [query]);
+  }, [query, menuItems]);
 
   return (
     <>
@@ -104,22 +133,39 @@ export default function KatalogMenu() {
                 </div>
 
                 <div className="p-6">
-                  <h2 className="text-2xl font-bold text-white">
-                    {item.name}
-                  </h2>
+                  {item.isBestSeller && (
+                    <span
+                      className="
+      inline-block
+      rounded-full
+      bg-red-500
+      px-3
+      py-1
+      text-xs
+      font-bold
+      text-white
+      shadow-md
+    "
+                    >
+                      🔥 BEST SELLER
+                    </span>
+                  )}
+                  <h2 className="mt-3 text-2xl font-bold text-white">{item.name}</h2>
 
-                  <p className="mt-3 text-gray-300">
-                    {item.description}
-                  </p>
+                  <p className="mt-3 text-gray-300">{item.description}</p>
 
                   <div className="mt-6 flex items-center justify-between">
                     <span className="text-3xl font-extrabold text-amber-400">
-                      {item.price}
+                      {new Intl.NumberFormat("id-ID", {
+                        style: "currency",
+                        currency: "IDR",
+                        maximumFractionDigits: 0,
+                      }).format(item.price)}
                     </span>
 
-                  <Button
-  size="sm"
-  className="
+                    <Button
+                      size="sm"
+                      className="
     bg-amber-400
     text-slate-900
     font-semibold
@@ -128,18 +174,16 @@ export default function KatalogMenu() {
     transition-all
     duration-300
   "
->
-  Detail
-</Button>
+                    >
+                      Detail
+                    </Button>
                   </div>
                 </div>
               </div>
             ))
           ) : (
             <div className="col-span-full text-center">
-              <p className="text-lg text-gray-300">
-                Menu tidak ditemukan.
-              </p>
+              <p className="text-lg text-gray-300">Menu tidak ditemukan.</p>
             </div>
           )}
         </section>
