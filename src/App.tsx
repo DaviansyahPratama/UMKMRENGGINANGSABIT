@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import RequireOwner from "./components/auth/RequireOwner";
-import AppLayout from "./layout/AppLayout";
-import GuestLayout from "./layout/GuestLayout";
+import AppLayout from "./layout/multilayout/AppLayout";
+import GuestLayout from "./layout/multilayout/GuestLayout";
 import ProductDetail from "./pages/Public/ProductDetail";
 
 /* ================================= */
@@ -47,33 +47,15 @@ export default function App() {
         {/* PUBLIC / LANDING PAGE */}
         {/* ================================= */}
         <Route element={<GuestLayout />}>
-
-          <Route
-            path="/"
-            element={<LandingPage />}
-          />
-
-          <Route
-            path="/menu"
-            element={<KatalogMenu />}
-          />
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/menu" element={<KatalogMenu />} />
 
           {/* DETAIL PRODUK */}
-          <Route
-            path="/products/:id"
-            element={<ProductDetail />}
-          />
+          <Route path="/products/:id" element={<ProductDetail />} />
 
-          <Route
-            path="/outlets"
-            element={<OutletLokasi />}
-          />
+          <Route path="/outlets" element={<OutletLokasi />} />
 
-          <Route
-            path="/kontak"
-            element={<KontakOwner />}
-          />
-
+          <Route path="/kontak" element={<KontakOwner />} />
         </Route>
 
         {/* ================================= */}

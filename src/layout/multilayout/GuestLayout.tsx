@@ -1,6 +1,6 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import PublicFooter from "./PublicFooter";
+import { useAuth } from "../../context/AuthContext";
+import PublicFooter from "../../components/ui/PublicFooter";
 
 export default function GuestLayout() {
   const { isOwnerAuthenticated } = useAuth();

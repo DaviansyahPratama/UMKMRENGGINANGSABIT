@@ -10,7 +10,13 @@ export default function AuthLayout({
 }) {
   return (
     // CANVAS UTAMA: Dipaksa hitam pekat (#050505) di semua mode (light/dark)
-    <div className="relative min-h-screen w-full flex items-center justify-center bg-[#050505] text-white font-sans overflow-hidden px-4 py-12 selection:bg-[#E2A929] selection:text-black z-1">
+    <div
+      className="relative min-h-screen w-full flex items-center justify-center bg-[#050505] text-white font-sans overflow-hidden px-4 py-12 selection:bg-[#E2A929] selection:text-black"
+      style={{
+        backgroundImage:
+          "radial-gradient(circle at 15% 13%, rgba(251, 101, 20, 0.18), transparent 16%), radial-gradient(circle at 85% 88%, rgba(97, 20, 20, 0.12), transparent 22%)",
+      }}
+    >
       
       {/* ==================== ORNAMEN DEKORATIF MODERN ==================== */}
       {/* Pendaran Cahaya Marun & Emas di Latar Belakang */}
@@ -42,10 +48,10 @@ export default function AuthLayout({
 
       {/* ==================== WADAH KONTEN FORMULIR (CENTRIC GLASS) ==================== */}
       {/* Anak komponen (SignInForm / SignUpForm) dirender tepat di tengah dalam kotak premium */}
-      <div className="relative w-full max-w-[460px] z-10 bg-white/[0.01] backdrop-blur-md border border-white/10 p-1 md:p-2 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.8)] transition-all duration-300 hover:border-white/15">
+      <div className="relative w-full max-w-[460px] z-10 bg-black/80 backdrop-blur-md border border-orange-500/20 p-1 md:p-2 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.8)] transition-all duration-300 hover:border-orange-400/30">
         
         {/* Garis Aksen Emas Pembatas Atas Wadah */}
-        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#E2A929] to-transparent" />
+        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-orange-400 to-transparent" />
         
         {/* Render Formulir Asli (<SignInForm /> atau <SignUpForm />) */}
         <div className="bg-black/40 p-6 md:p-8">
