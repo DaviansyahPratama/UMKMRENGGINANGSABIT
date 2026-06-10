@@ -105,7 +105,7 @@ const AppSidebar: React.FC = () => {
               onClick={() => handleSubmenuToggle(index, menuType)}
               className={`menu-item group ${
                 openSubmenu?.type === menuType && openSubmenu?.index === index
-                  ? "menu-item-active"
+                  ? "bg-amber-50/80 text-amber-600 dark:bg-amber-950/20 dark:text-amber-400 font-bold"
                   : "menu-item-inactive"
               } cursor-pointer ${
                 !isExpanded && !isHovered
@@ -116,7 +116,7 @@ const AppSidebar: React.FC = () => {
               <span
                 className={`menu-item-icon-size  ${
                   openSubmenu?.type === menuType && openSubmenu?.index === index
-                    ? "menu-item-icon-active"
+                    ? "text-amber-600 dark:text-amber-400"
                     : "menu-item-icon-inactive"
                 }`}
               >
@@ -130,7 +130,7 @@ const AppSidebar: React.FC = () => {
                   className={`ml-auto w-5 h-5 transition-transform duration-200 ${
                     openSubmenu?.type === menuType &&
                     openSubmenu?.index === index
-                      ? "rotate-180 text-brand-500"
+                      ? "rotate-180 text-amber-600 dark:text-amber-400"
                       : ""
                   }`}
                 />
@@ -141,13 +141,15 @@ const AppSidebar: React.FC = () => {
               <Link
                 to={nav.path}
                 className={`menu-item group ${
-                  isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"
+                  isActive(nav.path) 
+                    ? "bg-amber-50/80 text-amber-600 dark:bg-amber-950/20 dark:text-amber-400 font-bold" 
+                    : "menu-item-inactive"
                 }`}
               >
                 <span
                   className={`menu-item-icon-size ${
                     isActive(nav.path)
-                      ? "menu-item-icon-active"
+                      ? "text-amber-600 dark:text-amber-400"
                       : "menu-item-icon-inactive"
                   }`}
                 >
@@ -179,7 +181,7 @@ const AppSidebar: React.FC = () => {
                       to={subItem.path}
                       className={`menu-dropdown-item ${
                         isActive(subItem.path)
-                          ? "menu-dropdown-item-active"
+                          ? "bg-amber-50/60 text-amber-600 dark:bg-amber-950/30 dark:text-amber-400 font-bold"
                           : "menu-dropdown-item-inactive"
                       }`}
                     >
@@ -189,7 +191,7 @@ const AppSidebar: React.FC = () => {
                           <span
                             className={`ml-auto ${
                               isActive(subItem.path)
-                                ? "menu-dropdown-badge-active"
+                                ? "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300"
                                 : "menu-dropdown-badge-inactive"
                             } menu-dropdown-badge`}
                           >
@@ -200,7 +202,7 @@ const AppSidebar: React.FC = () => {
                           <span
                             className={`ml-auto ${
                               isActive(subItem.path)
-                                ? "menu-dropdown-badge-active"
+                                ? "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300"
                                 : "menu-dropdown-badge-inactive"
                             } menu-dropdown-badge`}
                           >

@@ -1,14 +1,6 @@
 import { useMemo, useState } from "react";
 import PageBreadcrumb from "../../components/common/PageBreadCrumb";
 import PageMeta from "../../components/common/PageMeta";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHeader,
-  TableRow,
-} from "../../components/ui/table";
-import Button from "../../components/ui/button/Button";
 import { Link } from "react-router";
 import {
   loadModalPenjualan,
@@ -44,117 +36,153 @@ export default function Keuntungan() {
     <>
       <PageMeta
         title="Keuntungan Usaha | UMKM Rengginang Sabit"
-        description="Perhitungan keuntungan usaha berdasarkan modal dan transfer outlet."
+        description="Perhitungan analisis keuntungan usaha bersih berdasarkan akumulasi modal produksi dan transfer dana outlet."
       />
-      <div className="space-y-6">
-        <PageBreadcrumb pageTitle="Perhitungan Keuntungan (KF05)" />
+      
+      <div className="space-y-6 p-6 bg-gray-50 dark:bg-slate-900/40 min-h-screen text-gray-900 dark:text-slate-100">
+        
+        {/* BREADCRUMB */}
+        <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-800 pb-4">
+          <div className="text-gray-900 dark:text-white">
+            <PageBreadcrumb pageTitle="Perhitungan Keuntungan (KF05)" />
+          </div>
+        </div>
 
-        <div className="grid grid-cols-12 gap-4 md:gap-6">
-          <div className="col-span-12 xl:col-span-4">
-            <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] px-6 py-5">
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+        {/* BARIS KARTU RINGKASAN FINANSIAL */}
+        <div className="grid grid-cols-12 gap-5">
+          {/* KARTU 1: MODAL */}
+          <div className="col-span-12 md:col-span-4">
+            <div className="relative overflow-hidden rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-950/40">
+              <div className="absolute top-0 left-0 h-full w-1 bg-rose-500" />
+              <p className="text-xs font-semibold text-gray-400 dark:text-slate-400 uppercase tracking-wider pl-1">
                 Modal (Pengeluaran)
               </p>
-              <p className="mt-2 text-2xl font-semibold text-gray-900 dark:text-white/90">
+              <p className="mt-2 text-xl font-bold text-gray-900 dark:text-white pl-1">
                 {formatRupiah(totals.totalModal)}
               </p>
             </div>
           </div>
 
-          <div className="col-span-12 xl:col-span-4">
-            <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] px-6 py-5">
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+          {/* KARTU 2: PEMASUKAN */}
+          <div className="col-span-12 md:col-span-4">
+            <div className="relative overflow-hidden rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-950/40">
+              <div className="absolute top-0 left-0 h-full w-1 bg-emerald-500" />
+              <p className="text-xs font-semibold text-gray-400 dark:text-slate-400 uppercase tracking-wider pl-1">
                 Pemasukan (Transfer Outlet)
               </p>
-              <p className="mt-2 text-2xl font-semibold text-gray-900 dark:text-white/90">
+              <p className="mt-2 text-xl font-bold text-gray-900 dark:text-white pl-1">
                 {formatRupiah(totals.totalTransfer)}
               </p>
             </div>
           </div>
 
-          <div className="col-span-12 xl:col-span-4">
-            <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] px-6 py-5">
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                Keuntungan
+          {/* KARTU 3: KEUNTUNGAN BERSIH */}
+          <div className="col-span-12 md:col-span-4">
+            <div className="relative overflow-hidden rounded-xl border border-amber-200 bg-amber-50/20 p-5 shadow-sm dark:border-amber-900/30 dark:bg-amber-950/10">
+              <div className="absolute top-0 left-0 h-full w-1 bg-amber-500" />
+              <p className="text-xs font-semibold text-amber-700 dark:text-amber-400 uppercase tracking-wider pl-1">
+                Keuntungan Bersih (Profit) 🌟
               </p>
-              <p className="mt-2 text-2xl font-semibold text-gray-900 dark:text-white/90">
+              <p className="mt-2 text-xl font-bold text-amber-600 dark:text-amber-400 pl-1">
                 {formatRupiah(totals.profit)}
-              </p>
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                Profit = total pemasukan - total modal
               </p>
             </div>
           </div>
         </div>
 
-        <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] p-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        {/* KONTEN UTAMA TABEL */}
+        <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/20">
+          
+          {/* HEADER TABEL ACTION */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
             <div>
-              <h3 className="text-base font-semibold text-gray-800 dark:text-white/90">
-                Ringkasan Profit per Minggu (8 minggu terakhir)
+              <h3 className="text-base font-semibold text-gray-900 dark:text-white">
+                Ringkasan Profit Tren Mingguan
               </h3>
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                Sisi “hasil perhitungan” agar data KF05 terlihat jelas.
+              <p className="text-xs text-gray-400 dark:text-slate-400 mt-0.5">
+                Evaluasi matriks parameter lembar data KF05 (Rentang 8 Minggu Terakhir).
               </p>
             </div>
-            <div className="flex items-center gap-3">
-              <Button
-                variant="outline"
-                size="sm"
+            
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                className="border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 px-3.5 py-2 text-xs font-medium rounded-lg transition-colors cursor-pointer"
                 onClick={() => setRefreshKey((k) => k + 1)}
               >
-                Refresh
-              </Button>
+                Segarkan Data
+              </button>
+              
               <Link
                 to="/owner/dashboard-keuntungan"
-                className="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+                className="inline-flex items-center justify-center rounded-lg border border-amber-200 bg-amber-50/60 px-3.5 py-2 text-xs font-semibold text-amber-700 shadow-xs hover:bg-amber-50 dark:border-amber-900/40 dark:bg-amber-950/20 dark:text-amber-400 dark:hover:bg-amber-950/40 transition-colors text-center"
               >
-                Buka Dashboard Keuntungan
+                Buka Visual Dashboard 📈
               </Link>
             </div>
           </div>
 
-          <div className="mt-5 overflow-x-auto">
-            <Table className="min-w-[720px]">
-              <TableHeader>
-                <TableRow>
-                  <TableCell isHeader className="py-3">
-                    Periode
-                  </TableCell>
-                  <TableCell isHeader className="py-3">
-                    Profit (IDR)
-                  </TableCell>
-                  <TableCell isHeader className="py-3">
-                    Pemasukan (Transfer)
-                  </TableCell>
-                  <TableCell isHeader className="py-3">
-                    Modal (Pengeluaran)
-                  </TableCell>
-                </TableRow>
-              </TableHeader>
-              <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
-                {weekly.labels.map((label, idx) => (
-                  <TableRow key={label}>
-                    <TableCell className="py-3 text-gray-700 dark:text-gray-300">
-                      {label}
-                    </TableCell>
-                    <TableCell className="py-3 text-gray-700 dark:text-gray-300">
-                      {formatRupiah(weekly.profits[idx])}
-                    </TableCell>
-                    <TableCell className="py-3 text-gray-700 dark:text-gray-300">
-                      {formatRupiah(weekly.totalTransfers[idx])}
-                    </TableCell>
-                    <TableCell className="py-3 text-gray-700 dark:text-gray-300">
-                      {formatRupiah(weekly.totalModal[idx])}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+          {/* KONSTRUKSI TABEL MODEREN DENGAN CODES GRID ASLI */}
+          <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-950">
+            <div className="min-w-[760px] w-full text-left text-xs">
+              
+              {/* BARIS JUDUL / THEAD (Grid 4 Kolom) */}
+              <div className="bg-gray-50 dark:bg-slate-900/50 border-b border-gray-200 dark:border-slate-800 grid grid-cols-4 py-3.5 px-6 font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                <div>Periode Mingguan</div>
+                <div>Profit Bersih (IDR)</div>
+                <div>Arus Pemasukan</div>
+                <div>Beban Modal</div>
+              </div>
+              
+              {/* BARIS DATA / TBODY */}
+              <div className="divide-y divide-gray-100 dark:divide-slate-800/60">
+                {weekly.labels.length === 0 ? (
+                  <div className="text-center text-gray-400 dark:text-slate-500 py-10 font-medium">
+                    Belum ada data keuangan berkala yang terekam.
+                  </div>
+                ) : (
+                  weekly.labels.map((label, idx) => {
+                    const currentProfit = weekly.profits[idx] || 0;
+                    return (
+                      <div 
+                        key={label} 
+                        className="grid grid-cols-4 items-center py-4 px-6 hover:bg-gray-50/50 dark:hover:bg-slate-900/20 transition-colors"
+                      >
+                        {/* 1. Kolom Periode */}
+                        <div className="font-bold text-gray-700 dark:text-slate-300">
+                          {label}
+                        </div>
+                        
+                        {/* 2. Kolom Profit Bersih */}
+                        <div className={`font-bold flex items-center gap-1.5 ${currentProfit >= 0 ? "text-amber-600 dark:text-amber-400" : "text-rose-600 dark:text-rose-400"}`}>
+                          {formatRupiah(currentProfit)}
+                          {currentProfit < 0 && (
+                            <span className="text-[10px] font-medium bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 px-1 py-0.5 rounded">
+                              Defisit
+                            </span>
+                          )}
+                        </div>
+                        
+                        {/* 3. Kolom Arus Pemasukan */}
+                        <div className="font-medium text-gray-600 dark:text-slate-400">
+                          {formatRupiah(weekly.totalTransfers[idx])}
+                        </div>
+                        
+                        {/* 4. Kolom Beban Modal */}
+                        <div className="font-medium text-gray-600 dark:text-slate-400">
+                          {formatRupiah(weekly.totalModal[idx])}
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+
+            </div>
           </div>
+          
         </div>
       </div>
     </>
   );
 }
-
