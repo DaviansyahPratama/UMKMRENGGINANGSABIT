@@ -37,10 +37,9 @@ export default function Home() {
       />
 
       {/* Container utama transparan di mode dark agar melebur dengan layout dasar aplikasi */}
-      <div className="space-y-8 p-4 bg-transparent text-gray-900 dark:text-slate-100 min-h-screen">
-        
+      <div className="space-y-6 lg:space-y-8 bg-transparent text-gray-900 dark:text-slate-100 min-h-screen">
         {/* BREADCRUMB HEADER */}
-        <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-800/60 pb-5">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-gray-200 dark:border-slate-800/60 pb-5">
           <div className="text-gray-900 dark:text-white [&_*]:text-gray-600 dark:[&_*]:text-slate-200">
             <PageBreadcrumb pageTitle="Dashboard Utama Owner" />
           </div>
@@ -163,7 +162,7 @@ export default function Home() {
               <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-4">
                 Analisis Kuantitas Data
               </h3>
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div className="rounded-xl bg-gray-50/80 p-4 border border-gray-200 dark:bg-slate-950/60 dark:border-slate-800/50">
                   <p className="text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-slate-400">Modal</p>
                   <p className="mt-1 text-xl font-black text-gray-900 dark:text-white">{modalEntries.length} <span className="text-xs font-normal text-gray-400 dark:text-slate-500">item</span></p>
