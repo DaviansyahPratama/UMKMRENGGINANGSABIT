@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useSidebar } from "../context/SidebarContext";
 import { ThemeToggleButton } from "../components/common/ThemeToggleButton";
 import NotificationDropdown from "../components/header/NotificationDropdown";
 import UserDropdown from "../components/header/UserDropdown";
+import { navItems as sharedNavItems, othersItems as sharedOthersItems } from "../data/menu";
 
 const AppHeader: React.FC = () => {
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
@@ -24,6 +25,65 @@ const AppHeader: React.FC = () => {
   };
 
   const inputRef = useRef<HTMLInputElement>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
+  const [suggestions, setSuggestions] = useState<{
+    name: string;
+    path?: string;
+  }[]>([]);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+
+  const allMenuCandidates = useMemo(() => {
+    const list: { name: string; path?: string }[] = [];
+    sharedNavItems.forEach((n) => {
+      if (n.subItems) n.subItems.forEach((s) => list.push({ name: s.name, path: s.path }));
+      else list.push({ name: n.name, path: (n as any).path });
+    });
+    sharedOthersItems.forEach((n) => {
+      if (n.subItems) n.subItems.forEach((s) => list.push({ name: s.name, path: s.path }));
+      else list.push({ name: n.name, path: (n as any).path });
+    });
+    return list;
+  }, []);
+
+  const handleSearch = (e?: React.FormEvent) => {
+    e && e.preventDefault();
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return;
+
+    const candidates: { name: string; path?: string }[] = [];
+    sharedNavItems.forEach((n) => {
+      if (n.subItems) {
+        n.subItems.forEach((s) => candidates.push({ name: s.name, path: s.path }));
+      } else candidates.push({ name: n.name, path: (n as any).path });
+    });
+    sharedOthersItems.forEach((n) => {
+      if (n.subItems) {
+        n.subItems.forEach((s) => candidates.push({ name: s.name, path: s.path }));
+      } else candidates.push({ name: n.name, path: (n as any).path });
+    });
+
+    const match = candidates.find((c) => c.name.toLowerCase().includes(q) && c.path);
+    if (match && match.path) {
+      // navigate to matched menu path
+      navigate(match.path);
+      setSearchQuery("");
+      setSuggestions([]);
+      inputRef.current?.blur();
+    }
+  };
+
+  const updateSuggestions = (q: string) => {
+    const qs = q.trim().toLowerCase();
+    if (!qs) {
+      setSuggestions([]);
+      setSelectedIndex(-1);
+      return;
+    }
+    const matches = allMenuCandidates.filter((c) => c.name.toLowerCase().includes(qs) && c.path);
+    setSuggestions(matches.slice(0, 6));
+    setSelectedIndex(-1);
+  };
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -84,16 +144,16 @@ const AppHeader: React.FC = () => {
           </button>
 
           <Link to="/" className="lg:hidden">
-            <img
-              className="dark:hidden"
-              src="./images/logo/logo.svg"
-              alt="Logo"
-            />
-            <img
-              className="hidden dark:block"
-              src="./images/logo/logo-dark.svg"
-              alt="Logo"
-            />
+            <div className="flex items-center gap-2">
+              <img
+                src="/images/logo/rengginang-sabit.png"
+                alt="Logo"
+                className="w-8 h-8"
+              />
+              <span className="font-semibold text-lg text-gray-900 dark:text-white">
+                RengginangSabit
+              </span>
+            </div>
           </Link>
 
           <button
@@ -138,12 +198,76 @@ const AppHeader: React.FC = () => {
                 </span>
                 <input
                   ref={inputRef}
+                  value={searchQuery}
+                  onChange={(ev) => {
+                    setSearchQuery(ev.target.value);
+                    updateSuggestions(ev.target.value);
+                  }}
+                  onFocus={() => {
+                    if (searchQuery) updateSuggestions(searchQuery);
+                  }}
+                  onBlur={() => {
+                    setTimeout(() => {
+                      setSuggestions([]);
+                      setSelectedIndex(-1);
+                    }, 150);
+                  }}
+                  onKeyDown={(ev) => {
+                    if (ev.key === "Enter") {
+                      if (selectedIndex >= 0 && suggestions[selectedIndex]) {
+                        const s = suggestions[selectedIndex];
+                        if (s.path) {
+                          navigate(s.path);
+                          setSearchQuery("");
+                          setSuggestions([]);
+                          inputRef.current?.blur();
+                        }
+                      } else {
+                        handleSearch();
+                      }
+                    } else if (ev.key === "ArrowDown") {
+                      ev.preventDefault();
+                      setSelectedIndex((i) => Math.min(i + 1, suggestions.length - 1));
+                    } else if (ev.key === "ArrowUp") {
+                      ev.preventDefault();
+                      setSelectedIndex((i) => Math.max(i - 1, 0));
+                    } else if (ev.key === "Escape") {
+                      setSuggestions([]);
+                      setSelectedIndex(-1);
+                    }
+                  }}
                   type="text"
                   placeholder="Search or type command..."
                   className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 pl-12 pr-14 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-none focus:ring focus:ring-brand-500/10 dark:border-gray-800 dark:bg-gray-900 dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 xl:w-[430px]"
                 />
+                {suggestions.length > 0 && (
+                  <div className="absolute left-0 right-0 mt-1 z-50 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg">
+                    <ul>
+                      {suggestions.map((s, idx) => (
+                        <li
+                          key={s.name + idx}
+                          onMouseEnter={() => setSelectedIndex(idx)}
+                          onMouseLeave={() => setSelectedIndex(-1)}
+                          onClick={() => {
+                            if (s.path) {
+                              navigate(s.path);
+                              setSearchQuery("");
+                              setSuggestions([]);
+                              inputRef.current?.blur();
+                            }
+                          }}
+                          className={`px-3 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 ${
+                            idx === selectedIndex ? "bg-gray-100 dark:bg-gray-700" : ""
+                          }`}
+                        >
+                          {s.name}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
-                <button className="absolute right-2.5 top-1/2 inline-flex -translate-y-1/2 items-center gap-0.5 rounded-lg border border-gray-200 bg-gray-50 px-[7px] py-[4.5px] text-xs -tracking-[0.2px] text-gray-500 dark:border-gray-800 dark:bg-white/[0.03] dark:text-gray-400">
+                <button onClick={(ev)=>{ev.preventDefault(); handleSearch();}} className="absolute right-2.5 top-1/2 inline-flex -translate-y-1/2 items-center gap-0.5 rounded-lg border border-gray-200 bg-gray-50 px-[7px] py-[4.5px] text-xs -tracking-[0.2px] text-gray-500 dark:border-gray-800 dark:bg-white/[0.03] dark:text-gray-400">
                   <span> ⌘ </span>
                   <span> K </span>
                 </button>

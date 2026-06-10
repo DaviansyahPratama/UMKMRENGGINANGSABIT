@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import PageMeta from "../../components/common/PageMeta";
-import Button from "../../components/ui/button/Button";
-import api from "../../services/api";
+import { Link } from "react-router-dom";
+import api, { buildProductImageUrl } from "../../services/api";
 import { Product } from "../../types/Product";
 
 export default function KatalogMenu() {
@@ -20,9 +20,7 @@ export default function KatalogMenu() {
         composition: item.composition,
         category: item.category,
         price: item.price,
-        imageUrl: item.image_url
-          ? `http://127.0.0.1:8000/storage/${item.image_url}`
-          : "",
+        imageUrl: buildProductImageUrl(item.image_url),
         isBestSeller: Boolean(item.is_best_seller),
       }));
 
@@ -124,8 +122,12 @@ export default function KatalogMenu() {
               >
                 <div className="overflow-hidden">
                   <img
-                    src={item.imageUrl}
-                    alt={item.name}
+                    src={item.imageUrl || "/images/logo/rengginang-sabit.png"}
+                    loading="lazy"
+                    alt={`Gambar ${item.name}`}
+                    onError={(event) => {
+                      event.currentTarget.src = "/images/logo/rengginang-sabit.png";
+                    }}
                     className="
                       h-72
                       w-full
@@ -170,20 +172,12 @@ export default function KatalogMenu() {
                       }).format(item.price)}
                     </span>
 
-                    <Button
-                      size="sm"
-                      className="
-    bg-amber-400
-    text-slate-900
-    font-semibold
-    shadow-md
-    hover:bg-amber-500
-    transition-all
-    duration-300
-  "
+                    <Link
+                      to={`/products/${item.id}`}
+                      className={`rounded-xl bg-amber-400 px-4 py-2 text-sm font-semibold text-slate-900 shadow-md hover:bg-amber-500 transition-all duration-300`}
                     >
                       Detail
-                    </Button>
+                    </Link>
                   </div>
                 </div>
               </div>

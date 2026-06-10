@@ -17,7 +17,7 @@ export default function PublicNavbar() {
       path: "/outlets",
     },
     {
-      label: "Kontak",
+      label: "Informasi",
       path: "/kontak",
     },
   ];

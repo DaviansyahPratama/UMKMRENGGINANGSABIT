@@ -1,8 +1,20 @@
 import { useMemo, useState } from "react";
 import PageBreadcrumb from "../../components/common/PageBreadCrumb";
 import PageMeta from "../../components/common/PageMeta";
-import { PRODUCTS } from "../../lib/umkmData";
+import { DEFAULT_MENU_ITEMS } from "../../lib/umkmData";
 import Input from "../../components/form/input/InputField";
+
+type ProductVariant = {
+  id: string;
+  name: string;
+  variants: string[];
+};
+
+const PRODUCTS: ProductVariant[] = DEFAULT_MENU_ITEMS.map((item) => ({
+  id: item.id,
+  name: item.name,
+  variants: [item.category || "Standar"],
+}));
 
 export default function VarianRasa() {
   const [query, setQuery] = useState("");

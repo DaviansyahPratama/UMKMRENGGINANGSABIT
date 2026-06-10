@@ -30,7 +30,7 @@ const Navbar: React.FC = () => {
             <a href="#home" className="text-yellow-500 transition">Beranda</a>
             <a href="#katalog" className="hover:text-yellow-500 transition">Katalog</a>
             <a href="#outlet" className="hover:text-yellow-500 transition">Outlet</a>
-            <a href="#kontak" className="hover:text-yellow-500 transition">Kontak</a>
+            <a href="#kontak" className="hover:text-yellow-500 transition">Informasi</a>
           </div>
 
           {/* 3. TOMBOL RESERVASI / LOGIN (Kanan) - Gaya D'Bento */}
@@ -69,4 +69,39 @@ const Navbar: React.FC = () => {
 
       {/* MENU RESPONSIVE UNTUK HP (Akan muncul jika hamburger diklik) */}
       {isOpen && (
-        <div className="md:hidden bg-black/95 absolute top-20 left-0 w-full border-b border-white/10 px-4 pt-2 pb-4
+        <div className="md:hidden bg-black/95 absolute top-20 left-0 w-full border-b border-white/10 px-4 pt-2 pb-4">
+          <div className="space-y-3">
+            <a href="#home" className="block text-white hover:text-yellow-500 transition">
+              Beranda
+            </a>
+            <a href="#katalog" className="block text-white hover:text-yellow-500 transition">
+              Katalog
+            </a>
+            <a href="#outlet" className="block text-white hover:text-yellow-500 transition">
+              Outlet
+            </a>
+            <a href="#kontak" className="block text-white hover:text-yellow-500 transition">
+              Informasi
+            </a>
+          </div>
+
+          <div className="mt-4 space-y-3">
+            <a
+              href="https://wa.me/your-number"
+              target="_blank"
+              rel="noreferrer"
+              className="block rounded-xl border border-yellow-500 text-yellow-500 px-4 py-3 text-center font-semibold text-xs uppercase tracking-widest transition duration-300 hover:bg-yellow-500 hover:text-black"
+            >
+              WhatsApp
+            </a>
+            <button className="w-full rounded-xl bg-yellow-600 px-4 py-3 text-black font-bold text-xs uppercase tracking-widest transition duration-300 hover:bg-yellow-700">
+              Login
+            </button>
+          </div>
+        </div>
+      )}
+    </nav>
+  );
+};
+
+export default Navbar;

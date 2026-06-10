@@ -1,11 +1,44 @@
+import { useEffect, useState } from "react";
 import PageMeta from "../../components/common/PageMeta";
 import { Link } from "react-router-dom";
-import product from "../../data/product";
+import api from "../../services/api";
+import { Product } from "../../types/Product";
 
 const WHATSAPP_URL =
   "https://wa.me/6285351101349?text=Halo%20Owner%20Rengginang%20Sabit%2C%20saya%20ingin%20bertanya%20tentang%20produk.";
 
 export default function GuestHome() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const response = await api.get("/products");
+        const loadedProducts: Product[] = response.data.map((item: any) => ({
+          id: item.id,
+          name: item.name,
+          description: item.description,
+          composition: item.composition,
+          category: item.category,
+          price: item.price,
+          imageUrl: item.image_url
+            ? `http://127.0.0.1:8000/storage/${item.image_url}`
+            : "",
+          isBestSeller: Boolean(item.is_best_seller),
+        }));
+
+        loadedProducts.sort((a, b) => Number(b.isBestSeller) - Number(a.isBestSeller));
+        setProducts(loadedProducts);
+      } catch (err) {
+        console.error(err);
+        setError("Gagal memuat produk.");
+      }
+    };
+
+    loadProducts();
+  }, []);
+
   return (
     <>
       <PageMeta
@@ -134,37 +167,50 @@ export default function GuestHome() {
           </div>
 
           <div className="mt-14 grid md:grid-cols-2 xl:grid-cols-3 gap-8">
-            {product.slice(0, 6).map((item) => (
-              <div
-                key={item.id}
-                className="bg-white border border-[#C8A24A]/20 hover:-translate-y-1 transition"
-              >
-                <img
-                  src={item.image}
-                  className="h-72 w-full object-cover"
-                />
+            {error ? (
+              <div className="col-span-full text-center text-red-500">
+                {error}
+              </div>
+            ) : (
+              products.slice(0, 6).map((item) => (
+                <div
+                  key={item.id}
+                  className="bg-white border border-[#C8A24A]/20 hover:-translate-y-1 transition"
+                >
+                  <img
+                    src={item.imageUrl}
+                    className="h-72 w-full object-cover"
+                  />
 
-                <div className="p-6">
-                  <h3 className="font-serif text-xl font-bold uppercase">
-                    {item.name}
-                  </h3>
+                  <div className="p-6">
+                    <h3 className="font-serif text-xl font-bold uppercase">
+                      {item.name}
+                    </h3>
 
-                  <p className="text-sm text-[#2B1B12]/70 mt-2 h-12 overflow-hidden">
-                    {item.description}
-                  </p>
+                    <p className="text-sm text-[#2B1B12]/70 mt-2 h-12 overflow-hidden">
+                      {item.description}
+                    </p>
 
-                  <div className="mt-6 flex justify-between items-center border-t border-[#C8A24A]/20 pt-4">
-                    <span className="text-[#C8A24A] font-bold">
-                      {item.price}
-                    </span>
+                    <div className="mt-6 flex justify-between items-center border-t border-[#C8A24A]/20 pt-4">
+                      <span className="text-[#C8A24A] font-bold">
+                        {new Intl.NumberFormat("id-ID", {
+                          style: "currency",
+                          currency: "IDR",
+                          maximumFractionDigits: 0,
+                        }).format(item.price)}
+                      </span>
 
-                    <button className="bg-[#6B3E2E] text-white px-4 py-2 text-xs uppercase hover:bg-[#8A4E3A]">
-                      Detail
-                    </button>
+                      <Link
+                        to={`/products/${item.id}`}
+                        className="bg-[#6B3E2E] text-white px-4 py-2 text-xs uppercase hover:bg-[#8A4E3A]"
+                      >
+                        Detail
+                      </Link>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
 
           <div className="mt-14 text-center">

@@ -54,7 +54,7 @@ export default function PublicFooter() {
               to="/kontak"
               className="text-gray-500 transition hover:text-amber-600 dark:text-gray-400"
             >
-              Kontak
+              Informasi
             </Link>
 
           </div>

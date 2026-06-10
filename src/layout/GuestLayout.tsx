@@ -20,7 +20,7 @@ export default function GuestLayout() {
       path: "/outlets",
     },
     {
-      label: "Kontak",
+      label: "Informasi",
       path: "/kontak",
     },
   ];
@@ -38,10 +38,12 @@ export default function GuestLayout() {
           {/* LOGO */}
           <Link to="/" className="flex items-center gap-3">
 
-            {/* Lingkaran inisial logo menggunakan warna Emas khas Logo asli */}
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#E2A929] text-xl font-bold text-[#611414] shadow-lg">
-              R
-            </div>
+            {/* Logo image */}
+            <img
+              src="/images/logo/rengginang-sabit.png"
+              alt="RengginangSabit"
+              className="h-10 w-10 rounded-full object-cover shadow-lg"
+            />
 
             <div>
               {/* Judul brand disesuaikan: Rengginang (Putih) & Sabit (Marun khas logo) */}

@@ -11,6 +11,7 @@ import {
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import { useAuth } from "../context/AuthContext";
+import { navItems as sharedNavItems, othersItems as sharedOthersItems } from "../data/menu";
 
 type NavItem = {
   name: string;
@@ -19,39 +20,12 @@ type NavItem = {
   subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
 };
 
-const navItems: NavItem[] = [
-  {
-    icon: <GridIcon />,
-    name: "Dashboard",
-    subItems: [
-      { name: "Beranda", path: "/", pro: false },
-      { name: "Manajemen Katalog", path: "/owner/menu-management", pro: false },
-      { name: "Manajemen Outlet", path: "/owner/outlet-management", pro: false },
-      { name: "Modal Penjualan", path: "/owner/modal-penjualan", pro: false },
-      { name: "Distribusi Stok Outlet", path: "/owner/distribusi-stok", pro: false },
-      { name: "Transfer Outlet", path: "/owner/transfer-outlet", pro: false },
-      { name: "Perhitungan Keuntungan", path: "/owner/keuntungan", pro: false },
-      { name: "Dashboard Keuntungan", path: "/owner/dashboard-keuntungan", pro: false },
-      { name: "Statistik Outlet", path: "/owner/statistik-outlet", pro: false },
-    ],
-  },
-];
-
-const othersItems: NavItem[] = [
-  {
-    icon: <ChatIcon />,
-    name: "Pelanggan",
-    subItems: [
-      { name: "Katalog Menu", path: "/menu", pro: false },
-      { name: "Lokasi Outlet", path: "/outlets", pro: false },
-    ],
-  },
-  {
-    icon: <PlugInIcon />,
-    name: "Authentication",
-    subItems: [{ name: "Sign In", path: "/signin", pro: false }],
-  },
-];
+// use shared menu data; icons are applied at render time
+const navItems: NavItem[] = sharedNavItems.map((n) => ({ ...n, icon: <GridIcon /> }));
+const othersItems: NavItem[] = sharedOthersItems.map((n, idx) => ({
+  ...n,
+  icon: idx === 0 ? <ChatIcon /> : <PlugInIcon />,
+}));
 
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
@@ -267,25 +241,20 @@ const AppSidebar: React.FC = () => {
       >
         <Link to="/">
           {isExpanded || isHovered || isMobileOpen ? (
-            <>
+            <div className="flex items-center gap-3">
               <img
-                className="dark:hidden"
-                src="/images/logo/logo.svg"
+                src="/images/logo/rengginang-sabit.png"
                 alt="Logo"
-                width={150}
-                height={40}
+                width={32}
+                height={32}
               />
-              <img
-                className="hidden dark:block"
-                src="/images/logo/logo-dark.svg"
-                alt="Logo"
-                width={150}
-                height={40}
-              />
-            </>
+              <span className="font-semibold text-lg text-gray-900 dark:text-white">
+                RengginangSabit
+              </span>
+            </div>
           ) : (
             <img
-              src="/images/logo/logo-icon.svg"
+              src="/images/logo/rengginang-sabit.png"
               alt="Logo"
               width={32}
               height={32}

@@ -28,10 +28,11 @@ export default function AuthLayout({
       {/* FLOATING BRANDING LOGO (Di Atas Formulir) */}
       <div className="absolute top-8 left-1/2 -translate-x-1/2 lg:left-12 lg:translate-x-0 z-50 flex items-center gap-3">
         <Link to="/" className="flex items-center gap-3 group">
-          {/* Bingkai Kotak Siku Tajam Inisial RS */}
-          <div className="w-10 h-10 border border-white/20 bg-black flex items-center justify-center group-hover:border-[#E2A929] transition-colors duration-300">
-            <span className="text-[#E2A929] font-serif font-bold text-sm tracking-tighter">RS</span>
-          </div>
+          <img
+            src="/images/logo/rengginang-sabit.png"
+            alt="RengginangSabit"
+            className="w-10 h-10 rounded-full object-cover shadow-md"
+          />
           <div className="hidden sm:block text-left">
             <span className="block text-xs font-bold uppercase tracking-[0.2em] text-white">Rengginang Sabit</span>
             <span className="block text-[9px] text-zinc-500 uppercase tracking-widest font-medium">Management</span>
