@@ -53,7 +53,7 @@ export default function LandingPage() {
           className="relative h-screen w-full bg-cover bg-center bg-no-repeat flex items-center justify-center"
           style={{
             backgroundImage:
-              "linear-gradient(rgba(0,0,0,.75), rgba(0,0,0,.75)), url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1600&auto=format&fit=crop')",
+              "linear-gradient(rgba(0,0,0,.75), rgba(0,0,0,.75)), url('/images/Background.jpg')",
           }}
         >
           <div className="relative z-10 max-w-4xl mx-auto text-center px-6">
