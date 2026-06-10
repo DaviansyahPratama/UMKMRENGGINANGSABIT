@@ -6,6 +6,8 @@ import Input from "../../components/form/input/InputField";
 import Button from "../../components/ui/button/Button";
 import { useEffect } from "react";
 import api from "../../services/api";
+import type { Product } from "../../types/Product";
+
 import {
   Table,
   TableBody,
@@ -28,7 +30,7 @@ export default function MenuManagement() {
   const [refreshKey, setRefreshKey] = useState(0);
   const settings = useMemo(() => loadAppSettings(), [refreshKey]);
 
-  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<number | null>(null);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [composition, setComposition] = useState("");
@@ -40,7 +42,8 @@ export default function MenuManagement() {
 
   const [ownerWhatsapp, setOwnerWhatsapp] = useState(settings.ownerWhatsapp);
   const [shopeeUrl, setShopeeUrl] = useState(settings.shopeeUrl);
-  const [menuItems, setMenuItems] = useState<any[]>([]);
+  const [menuItems, setMenuItems] = useState<Product[]>([]);
+  
 
   useEffect(() => {
     loadProducts();
@@ -62,6 +65,10 @@ export default function MenuManagement() {
           : "",
         isBestSeller: item.is_best_seller,
       }));
+      
+      products.sort((a: Product, b: Product) => {
+        return Number(b.isBestSeller) - Number(a.isBestSeller);
+      });
 
       setMenuItems(products);
     } catch (error) {
@@ -152,7 +159,7 @@ export default function MenuManagement() {
     }
   };
 
-  const handleEdit = (id: string) => {
+  const handleEdit = (id: number) => {
     const item = menuItems.find((m) => m.id === id);
     if (!item) return;
     setEditingId(item.id);
@@ -165,7 +172,7 @@ export default function MenuManagement() {
     setBestSeller(!!item.isBestSeller);
   };
 
-  const handleDelete = async (id: string, itemName: string) => {
+  const handleDelete = async (id: number, itemName: string) => {
     const ok = window.confirm(`Hapus menu "${itemName}"?`);
     if (!ok) return;
     await api.delete(`/products/${id}`);

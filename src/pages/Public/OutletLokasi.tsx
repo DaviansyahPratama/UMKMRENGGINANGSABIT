@@ -1,45 +1,46 @@
 import { useEffect, useState } from "react";
 import PageMeta from "../../components/common/PageMeta";
-
-// Data outlet resmi Rengginang Sabit
-const outlets = [
-  {
-    id: 1,
-    name: "Outlet Pusat Pekanbaru",
-    address: "Jl. Utama No. 12, Pekanbaru",
-    phone: "0853-5110-1349",
-    mapEmbedUrl:
-      "https://maps.google.com/maps?q=Pekanbaru&t=&z=13&ie=UTF8&iwloc=&output=embed",
-    mapGoogleLink:
-      "https://www.google.com/maps/search/?api=1&query=Pekanbaru",
-  },
-  {
-    id: 2,
-    name: "Outlet Cabang Panam",
-    address: "Jl. HR. Soebrantas KM 12, Panam",
-    phone: "0853-5110-1349",
-    mapEmbedUrl:
-      "https://maps.google.com/maps?q=Panam%20Pekanbaru&t=&z=13&ie=UTF8&iwloc=&output=embed",
-    mapGoogleLink:
-      "https://www.google.com/maps/search/?api=1&query=Panam+Pekanbaru",
-  },
-];
+import api from "../../services/api";
 
 export default function OutletLokasi() {
   const [query, setQuery] = useState("");
-  const [filteredOutlets, setFilteredOutlets] = useState(outlets);
+
+  const [outlets, setOutlets] = useState<any[]>([]);
+  const [filteredOutlets, setFilteredOutlets] = useState<any[]>([]);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
       const result = outlets.filter((outlet) =>
-        outlet.name.toLowerCase().includes(query.toLowerCase())
+        outlet.name.toLowerCase().includes(query.toLowerCase()),
       );
 
       setFilteredOutlets(result);
     }, 500);
 
     return () => clearTimeout(timeout);
-  }, [query]);
+  }, [query, outlets]);
+
+  const loadOutlets = async () => {
+    try {
+      const response = await api.get("/outlets");
+
+      const data = response.data.map((item: any) => ({
+        id: item.id,
+        name: item.name,
+        address: item.address,
+        google_maps_url: item.google_maps_url,
+      }));
+
+      setOutlets(data);
+      setFilteredOutlets(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    loadOutlets();
+  }, []);
 
   return (
     <>
@@ -49,10 +50,8 @@ export default function OutletLokasi() {
       />
 
       <div className="min-h-screen bg-black text-white selection:bg-amber-400 selection:text-black">
-
         {/* HEADER */}
         <section className="pt-24 pb-10 text-center px-6">
-
           <span className="inline-block rounded-full bg-amber-100 px-5 py-2 text-sm font-semibold text-amber-700">
             Peta Distribusi
           </span>
@@ -65,7 +64,6 @@ export default function OutletLokasi() {
           <p className="mt-4 text-lg text-gray-300">
             Temukan outlet resmi Rengginang Sabit terdekat.
           </p>
-
         </section>
 
         {/* SEARCH */}
@@ -96,7 +94,6 @@ export default function OutletLokasi() {
         {/* LIST OUTLET */}
         <section className="pb-24 px-4 sm:px-6 lg:px-8">
           <div className="max-w-6xl mx-auto space-y-8">
-
             {filteredOutlets.length > 0 ? (
               filteredOutlets.map((outlet) => (
                 <div
@@ -114,12 +111,9 @@ export default function OutletLokasi() {
                   "
                 >
                   <div className="flex flex-col lg:flex-row">
-
                     {/* INFO OUTLET */}
                     <div className="lg:w-[380px] p-8 border-b lg:border-b-0 lg:border-r border-amber-400/20">
-
                       <div className="space-y-6">
-
                         <div className="flex h-10 w-10 items-center justify-center rounded-full border border-amber-400 text-amber-400 font-bold">
                           {outlet.id}
                         </div>
@@ -129,23 +123,10 @@ export default function OutletLokasi() {
                             {outlet.name}
                           </h3>
 
-                          <p className="mt-3 text-gray-300">
-                            {outlet.address}
-                          </p>
+                          <p className="mt-3 text-gray-300">{outlet.address}</p>
                         </div>
-
-                        <div>
-                          <p className="text-xs uppercase tracking-widest text-gray-500">
-                            Telepon / WhatsApp
-                          </p>
-
-                          <p className="mt-2 text-white">
-                            {outlet.phone}
-                          </p>
-                        </div>
-
                         <a
-                          href={outlet.mapGoogleLink}
+                          href={outlet.google_maps_url}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="
@@ -162,43 +143,36 @@ export default function OutletLokasi() {
                         >
                           Buka Rute Navigasi
                         </a>
-
                       </div>
                     </div>
 
                     {/* MAP */}
-<div className="relative min-h-[350px] flex-1">
-  <iframe
-    src={outlet.mapEmbedUrl}
-    width="100%"
-    height="100%"
-    style={{
-      border: 0,
-      filter:
-        "grayscale(1) invert(0.92) contrast(1.2)",
-    }}
-    allowFullScreen
-    loading="lazy"
-    referrerPolicy="no-referrer-when-downgrade"
-    title={`Peta ${outlet.name}`}
-    className="absolute inset-0 h-full w-full"
-  />
-</div>
-
+                    <div className="relative min-h-[350px] flex-1">
+                      <iframe
+                        src={outlet.google_maps_url}
+                        width="100%"
+                        height="100%"
+                        style={{
+                          border: 0,
+                          filter: "grayscale(1) invert(0.92) contrast(1.2)",
+                        }}
+                        allowFullScreen
+                        loading="lazy"
+                        referrerPolicy="no-referrer-when-downgrade"
+                        title={`Peta ${outlet.name}`}
+                        className="absolute inset-0 h-full w-full"
+                      />
+                    </div>
                   </div>
                 </div>
               ))
             ) : (
               <div className="py-20 text-center">
-                <p className="text-lg text-gray-300">
-                  Outlet tidak ditemukan.
-                </p>
+                <p className="text-lg text-gray-300">Outlet tidak ditemukan.</p>
               </div>
             )}
-
           </div>
         </section>
-
       </div>
     </>
   );

@@ -1,9 +1,12 @@
-import { useMemo, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import PageMeta from "../../components/common/PageMeta";
 import PageBreadcrumb from "../../components/common/PageBreadCrumb";
 import Label from "../../components/form/Label";
 import Input from "../../components/form/input/InputField";
 import Button from "../../components/ui/button/Button";
+import { useEffect } from "react";
+import api from "../../services/api";
+
 import {
   Table,
   TableBody,
@@ -11,59 +14,66 @@ import {
   TableHeader,
   TableRow,
 } from "../../components/ui/table";
+
 import { PlusIcon, TrashBinIcon } from "../../icons";
-import {
-  addOutlet,
-  deleteOutlet,
-  loadOutlets,
-} from "../../lib/umkmStorage";
 
 export default function OutletManagement() {
-  const [refreshKey, setRefreshKey] = useState(0);
-  const outlets = useMemo(() => loadOutlets(), [refreshKey]);
+  const [outlets, setOutlets] = useState<any[]>([]);
 
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
-  const [lat, setLat] = useState<number | "">("");
-  const [lng, setLng] = useState<number | "">("");
+  const [googleMapsUrl, setGoogleMapsUrl] = useState("");
   const [error, setError] = useState<string | null>(null);
 
-  const handleAdd = (e: FormEvent) => {
+  const handleAdd = async (e: FormEvent) => {
     e.preventDefault();
     setError(null);
 
     if (!name.trim()) return setError("Nama outlet wajib diisi.");
     if (!address.trim()) return setError("Alamat outlet wajib diisi.");
-    if (lat === "" || Number.isNaN(Number(lat)))
-      return setError("Latitude harus angka.");
-    if (lng === "" || Number.isNaN(Number(lng)))
-      return setError("Longitude harus angka.");
+    if (!googleMapsUrl.trim()) return setError("URL Google Maps wajib diisi.");
 
     try {
-      addOutlet({
+      await api.post("/outlets", {
         name: name.trim(),
         address: address.trim(),
-        lat: Number(lat),
-        lng: Number(lng),
+        google_maps_url: googleMapsUrl.trim(),
       });
+
+      await loadOutlets();
+
       setName("");
       setAddress("");
-      setLat("");
-      setLng("");
-      setRefreshKey((k) => k + 1);
+      setGoogleMapsUrl("");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Gagal menambahkan outlet.");
+      setError(
+        err instanceof Error ? err.message : "Gagal menambahkan outlet.",
+      );
     }
   };
 
-  const handleDelete = (outletId: string, outletName: string) => {
+  const handleDelete = async (outletId: string, outletName: string) => {
     const ok = window.confirm(
-      `Hapus outlet "${outletName}"?\nData distribusi stok dan transfer yang terkait outlet ini juga akan terhapus.`
+      `Hapus outlet "${outletName}"?\nData distribusi stok dan transfer yang terkait outlet ini juga akan terhapus.`,
     );
     if (!ok) return;
 
-    deleteOutlet(outletId);
-    setRefreshKey((k) => k + 1);
+    await api.delete(`/outlets/${outletId}`);
+    await loadOutlets();
+  };
+
+  useEffect(() => {
+    loadOutlets();
+  }, []);
+
+  const loadOutlets = async () => {
+    try {
+      const response = await api.get("/outlets");
+
+      setOutlets(response.data);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -102,32 +112,22 @@ export default function OutletManagement() {
                     onChange={(e) => setAddress(e.target.value)}
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <Label>Latitude</Label>
-                    <Input
-                      type="number"
-                      value={lat}
-                      onChange={(e) =>
-                        setLat(e.target.value === "" ? "" : Number(e.target.value))
-                      }
-                      step={0.000001}
-                    />
-                  </div>
-                  <div>
-                    <Label>Longitude</Label>
-                    <Input
-                      type="number"
-                      value={lng}
-                      onChange={(e) =>
-                        setLng(e.target.value === "" ? "" : Number(e.target.value))
-                      }
-                      step={0.000001}
-                    />
-                  </div>
+                <div>
+                  <Label>Link Google Maps</Label>
+                  <Input
+                    placeholder="Paste URL Embed Google Maps"
+                    value={googleMapsUrl}
+                    onChange={(e) => setGoogleMapsUrl(e.target.value)}
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Google Maps → Share → Embed a map → Copy HTML → ambil URL
+                    pada src
+                  </p>
                 </div>
 
-                {error && <p className="text-sm font-medium text-error-500">{error}</p>}
+                {error && (
+                  <p className="text-sm font-medium text-error-500">{error}</p>
+                )}
 
                 <Button className="w-full" size="md" startIcon={<PlusIcon />}>
                   Simpan Outlet
@@ -149,10 +149,18 @@ export default function OutletManagement() {
                 <Table className="min-w-[860px]">
                   <TableHeader>
                     <TableRow>
-                      <TableCell isHeader className="py-3">Nama</TableCell>
-                      <TableCell isHeader className="py-3">Alamat</TableCell>
-                      <TableCell isHeader className="py-3">Koordinat</TableCell>
-                      <TableCell isHeader className="py-3">Aksi</TableCell>
+                      <TableCell isHeader className="py-3">
+                        Nama
+                      </TableCell>
+                      <TableCell isHeader className="py-3">
+                        Alamat
+                      </TableCell>
+                      <TableCell isHeader className="py-3">
+                        Google Maps
+                      </TableCell>
+                      <TableCell isHeader className="py-3">
+                        Aksi
+                      </TableCell>
                     </TableRow>
                   </TableHeader>
                   <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
@@ -174,8 +182,15 @@ export default function OutletManagement() {
                           <TableCell className="py-3 text-gray-700 dark:text-gray-300">
                             {o.address}
                           </TableCell>
-                          <TableCell className="py-3 text-gray-700 dark:text-gray-300">
-                            {o.lat}, {o.lng}
+                          <TableCell className="py-3">
+                            <a
+                              href={o.google_maps_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-500 underline"
+                            >
+                              Buka Maps
+                            </a>
                           </TableCell>
                           <TableCell className="py-3">
                             <Button
@@ -200,4 +215,3 @@ export default function OutletManagement() {
     </>
   );
 }
-

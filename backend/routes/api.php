@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\OutletController;
 
 Route::get('/test', function () {
     return response()->json([
@@ -10,3 +11,4 @@ Route::get('/test', function () {
 });
 
 Route::apiResource('products', ProductController::class);
+Route::apiResource('outlets', OutletController::class);

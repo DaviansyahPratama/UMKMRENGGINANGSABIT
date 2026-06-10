@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import PageMeta from "../../components/common/PageMeta";
 import Button from "../../components/ui/button/Button";
 import api from "../../services/api";
+import { Product } from "../../types/Product";
 
 export default function KatalogMenu() {
   const [query, setQuery] = useState("");
-  const [menuItems, setMenuItems] = useState<any[]>([]);
-  const [filteredMenu, setFilteredMenu] = useState<any[]>([]);
+  const [menuItems, setMenuItems] = useState<Product[]>([]);
+  const [filteredMenu, setFilteredMenu] = useState<Product[]>([]);
 
   const loadProducts = async () => {
     try {
@@ -19,11 +20,15 @@ export default function KatalogMenu() {
         composition: item.composition,
         category: item.category,
         price: item.price,
-        image: item.image_url
+        imageUrl: item.image_url
           ? `http://127.0.0.1:8000/storage/${item.image_url}`
           : "",
-        isBestSeller: item.is_best_seller,
+        isBestSeller: Boolean(item.is_best_seller),
       }));
+
+      products.sort((a: Product, b: Product) => {
+        return Number(b.isBestSeller) - Number(a.isBestSeller);
+      });
 
       setMenuItems(products);
       setFilteredMenu(products);
@@ -119,7 +124,7 @@ export default function KatalogMenu() {
               >
                 <div className="overflow-hidden">
                   <img
-                    src={item.image}
+                    src={item.imageUrl}
                     alt={item.name}
                     className="
                       h-72
@@ -150,7 +155,9 @@ export default function KatalogMenu() {
                       🔥 BEST SELLER
                     </span>
                   )}
-                  <h2 className="mt-3 text-2xl font-bold text-white">{item.name}</h2>
+                  <h2 className="mt-3 text-2xl font-bold text-white">
+                    {item.name}
+                  </h2>
 
                   <p className="mt-3 text-gray-300">{item.description}</p>
 
