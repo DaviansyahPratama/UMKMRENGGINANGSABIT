@@ -11,7 +11,10 @@ import {
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import { useAuth } from "../context/AuthContext";
-import { navItems as sharedNavItems, othersItems as sharedOthersItems } from "../data/menu";
+import {
+  navItems as sharedNavItems,
+  othersItems as sharedOthersItems,
+} from "../data/menu";
 
 type NavItem = {
   name: string;
@@ -21,7 +24,10 @@ type NavItem = {
 };
 
 // use shared menu data; icons are applied at render time
-const navItems: NavItem[] = sharedNavItems.map((n) => ({ ...n, icon: <GridIcon /> }));
+const navItems: NavItem[] = sharedNavItems.map((n) => ({
+  ...n,
+  icon: <GridIcon />,
+}));
 const othersItems: NavItem[] = sharedOthersItems.map((n, idx) => ({
   ...n,
   icon: idx === 0 ? <ChatIcon /> : <PlugInIcon />,
@@ -37,13 +43,13 @@ const AppSidebar: React.FC = () => {
     index: number;
   } | null>(null);
   const [subMenuHeight, setSubMenuHeight] = useState<Record<string, number>>(
-    {}
+    {},
   );
   const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   const isActive = useCallback(
     (path: string) => location.pathname === path,
-    [location.pathname]
+    [location.pathname],
   );
 
   useEffect(() => {
@@ -73,14 +79,15 @@ const AppSidebar: React.FC = () => {
   useEffect(() => {
     if (openSubmenu !== null) {
       const key = `${openSubmenu.type}-${openSubmenu.index}`;
+
       if (subMenuRefs.current[key]) {
-        setSubMenuHeight((prevHeights) => ({
-          ...prevHeights,
+        setSubMenuHeight((prev) => ({
+          ...prev,
           [key]: subMenuRefs.current[key]?.scrollHeight || 0,
         }));
       }
     }
-  }, [openSubmenu, subMenuHeight]); // Menambahkan subMenuHeight ke dependency array agar up-to-date
+  }, [openSubmenu]);
 
   const handleSubmenuToggle = (index: number, menuType: "main" | "others") => {
     setOpenSubmenu((prevOpenSubmenu) => {
@@ -96,7 +103,9 @@ const AppSidebar: React.FC = () => {
   };
 
   const renderMenuItems = (items: NavItem[], menuType: "main" | "others") => (
-    <ul className="flex flex-col gap-2"> {/* Mengurangi gap dari 4 ke 2 agar menu lebih rapi dan tidak terlalu renggang */}
+    <ul className="flex flex-col gap-2">
+      {" "}
+      {/* Mengurangi gap dari 4 ke 2 agar menu lebih rapi dan tidak terlalu renggang */}
       {items.map((nav, index) => (
         <li key={nav.name}>
           {nav.subItems ? (
@@ -140,8 +149,8 @@ const AppSidebar: React.FC = () => {
               <Link
                 to={nav.path}
                 className={`menu-item group flex items-center p-3 rounded-xl transition-all ${
-                  isActive(nav.path) 
-                    ? "bg-amber-50/80 text-amber-600 dark:bg-amber-950/20 dark:text-amber-400 font-bold" 
+                  isActive(nav.path)
+                    ? "bg-amber-50/80 text-amber-600 dark:bg-amber-950/20 dark:text-amber-400 font-bold"
                     : "menu-item-inactive"
                 } ${
                   !isExpanded && !isHovered
@@ -233,17 +242,9 @@ const AppSidebar: React.FC = () => {
       border-r border-gray-200 dark:border-gray-800
       transition-all duration-300 ease-in-out px-4.5 /* Ditambahkan padding horizontal sisi dalam */
 
-      ${
-        isExpanded || isHovered || isMobileOpen
-          ? "w-[290px]"
-          : "w-[90px]"
-      }
+      ${isExpanded || isHovered || isMobileOpen ? "w-[290px]" : "w-[90px]"}
 
-      ${
-        isMobileOpen
-          ? "translate-x-0"
-          : "-translate-x-full lg:translate-x-0"
-      }
+      ${isMobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
       `}
       onMouseEnter={() => !isExpanded && setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -307,11 +308,13 @@ const AppSidebar: React.FC = () => {
                     subItems: nav.subItems?.filter((s) => {
                       if (!s.path) return true;
                       if (s.path === "/") return true;
-                      return isOwnerAuthenticated ? s.path.startsWith("/owner/") : false;
+                      return isOwnerAuthenticated
+                        ? s.path.startsWith("/owner/")
+                        : false;
                     }),
                   };
                 }),
-                "main"
+                "main",
               )}
             </div>
 
@@ -338,7 +341,7 @@ const AppSidebar: React.FC = () => {
                     subItems: nav.subItems?.filter((s) => s.path === "/signin"),
                   };
                 }),
-                "others"
+                "others",
               )}
             </div>
           </div>
