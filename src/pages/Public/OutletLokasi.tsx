@@ -126,7 +126,7 @@ export default function OutletLokasi() {
                           <p className="mt-3 text-gray-300">{outlet.address}</p>
                         </div>
                         <a
-                          href={outlet.google_maps_url}
+                          href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(outlet.address)}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="

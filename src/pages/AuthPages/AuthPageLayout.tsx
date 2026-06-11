@@ -9,60 +9,94 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    // CANVAS UTAMA: Dipaksa hitam pekat (#050505) di semua mode (light/dark)
-    <div
-      className="relative min-h-screen w-full flex items-center justify-center bg-[#050505] text-white font-sans overflow-hidden px-4 py-12 selection:bg-[#E2A929] selection:text-black"
-      style={{
-        backgroundImage:
-          "radial-gradient(circle at 15% 13%, rgba(251, 101, 20, 0.18), transparent 16%), radial-gradient(circle at 85% 88%, rgba(97, 20, 20, 0.12), transparent 22%)",
-      }}
-    >
+    // CANVAS UTAMA: Menjadi Grid 2 Kolom di layar besar (lg:)
+    <div className="relative grid min-h-screen w-full grid-cols-1 bg-zinc-50 font-sans text-zinc-900 antialiased selection:bg-orange-500/20 selection:text-orange-950 lg:grid-cols-2">
       
-      {/* ==================== ORNAMEN DEKORATIF MODERN ==================== */}
-      {/* Pendaran Cahaya Marun & Emas di Latar Belakang */}
-      <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-[#611414]/20 blur-[150px] pointer-events-none" />
-      <div className="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] rounded-full bg-[#E2A929]/10 blur-[150px] pointer-events-none" />
-      
-      {/* Efek Pola Garis Grid Minimalis */}
-      <div className="absolute inset-0 opacity-[0.015] pointer-events-none" style={{ backgroundImage: "linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px)", backgroundSize: "50px 50px" }} />
+      {/* ==================== SISI KIRI: BRANDING & VISUAL ==================== */}
+      <div className="relative hidden flex-col justify-between overflow-hidden border-r border-zinc-200/80 bg-zinc-950 p-12 text-white lg:flex">
+        
+        {/* Ornamen Latar Belakang (Ambient Glow Khas Rengginang Sabit) */}
+        <div className="pointer-events-none absolute top-1/2 left-1/2 -z-10 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-orange-500/10 blur-[120px]" />
+        <div className="pointer-events-none absolute bottom-0 right-0 -z-10 h-[300px] w-[300px] rounded-full bg-amber-500/5 blur-[100px]" />
+        
+        {/* Pola Garis Grid Minimalis */}
+        <div 
+          className="pointer-events-none absolute inset-0 opacity-[0.02]" 
+          style={{ 
+            backgroundImage: "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)", 
+            backgroundSize: "40px 40px" 
+          }} 
+        />
 
-      {/* Ornamen Garis Abstrak Bawaan Template (Dibuat samar & elegan) */}
-      <div className="absolute inset-0 opacity-10 pointer-events-none flex items-center justify-center scale-125">
-        <GridShape />
+        {/* Garis Abstrak Bawaan Template */}
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center scale-90 opacity-[0.03]">
+          <GridShape />
+        </div>
+
+        {/* LOGO BRANDING (Bagian Atas Kiri) */}
+        <div>
+          <Link to="/" className="group inline-flex items-center gap-3.5">
+            <img
+              src="/images/logo/rengginang-sabit.png"
+              alt="RengginangSabit"
+              className="h-10 w-10 rounded-xl object-cover ring-1 ring-white/10"
+            />
+            <div className="text-left">
+              <span className="block text-sm font-black uppercase tracking-[0.2em] text-white group-hover:text-orange-400 transition-colors">
+                Rengginang Sabit
+              </span>
+              <span className="block text-[10px] font-bold uppercase tracking-widest text-zinc-500">
+                Management SYSTEM
+              </span>
+            </div>
+          </Link>
+        </div>
+
+        {/* TEKS JARGON UTAMA (Bagian Tengah/Bawah Kiri) */}
+        <div className="relative z-10 max-w-md space-y-3">
+          <span className="inline-flex items-center rounded-full bg-orange-500/10 px-3 py-1 text-xs font-semibold text-orange-400 ring-1 ring-inset ring-orange-500/20">
+            v2.0 Beta Release
+          </span>
+          <h2 className="text-3xl font-black tracking-tight leading-tight text-white xl:text-4xl">
+            Satu Panel Utama untuk Seluruh Kendali Operasional.
+          </h2>
+          <p className="text-sm leading-relaxed text-zinc-400">
+            Pantau performa, kelola data integrasi, dan amankan aktivitas manajemen sistem Rengginang Sabit dalam satu enkripsi terpadu.
+          </p>
+        </div>
+
+        {/* FOOTER KECIL (Bagian Paling Bawah Kiri) */}
+        <div className="text-xs text-zinc-600 font-medium">
+          &copy; 2026 Rengginang Sabit Corp. All rights reserved.
+        </div>
       </div>
 
-      {/* FLOATING BRANDING LOGO (Di Atas Formulir) */}
-      <div className="absolute top-8 left-1/2 -translate-x-1/2 lg:left-12 lg:translate-x-0 z-50 flex items-center gap-3">
-        <Link to="/" className="flex items-center gap-3 group">
-          <img
-            src="/images/logo/rengginang-sabit.png"
-            alt="RengginangSabit"
-            className="w-10 h-10 rounded-full object-cover shadow-md"
-          />
-          <div className="hidden sm:block text-left">
-            <span className="block text-xs font-bold uppercase tracking-[0.2em] text-white">Rengginang Sabit</span>
-            <span className="block text-[9px] text-zinc-500 uppercase tracking-widest font-medium">Management</span>
-          </div>
-        </Link>
-      </div>
+      {/* ==================== SISI KANAN: TEMPAT SIGNIN FORM ==================== */}
+      <div className="flex items-center justify-center p-6 sm:p-12 bg-zinc-50">
+        
+        {/* LOGO HANYA MUNCUL DI HP (Saat sisi kiri hilang) */}
+        <div className="absolute top-6 left-6 block lg:hidden">
+          <Link to="/" className="flex items-center gap-2.5">
+            <img
+              src="/images/logo/rengginang-sabit.png"
+              alt="RengginangSabit"
+              className="h-8 w-8 rounded-lg object-cover ring-1 ring-zinc-200"
+            />
+            <span className="text-xs font-black uppercase tracking-wider text-zinc-800">Rengginang Sabit</span>
+          </Link>
+        </div>
 
-      {/* ==================== WADAH KONTEN FORMULIR (CENTRIC GLASS) ==================== */}
-      {/* Anak komponen (SignInForm / SignUpForm) dirender tepat di tengah dalam kotak premium */}
-      <div className="relative w-full max-w-[460px] z-10 bg-black/80 backdrop-blur-md border border-orange-500/20 p-1 md:p-2 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.8)] transition-all duration-300 hover:border-orange-400/30">
-        
-        {/* Garis Aksen Emas Pembatas Atas Wadah */}
-        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-orange-400 to-transparent" />
-        
-        {/* Render Formulir Asli (<SignInForm /> atau <SignUpForm />) */}
-        <div className="bg-black/40 p-6 md:p-8">
+        {/* Wadah isi form login */}
+        <div className="w-full max-w-md antialiased">
           {children}
         </div>
       </div>
 
-      {/* TOMBOL PENGATUR TEMA (Tetap dipertahankan di pojok bawah sesuai template asli) */}
-      <div className="fixed z-50 hidden bottom-6 right-6 sm:block opacity-40 hover:opacity-100 transition-opacity duration-300">
+      {/* TOGGLER TEMA */}
+      <div className="fixed bottom-6 right-6 z-50 hidden opacity-30 transition-all duration-300 hover:opacity-100 sm:block">
         <ThemeTogglerTwo />
       </div>
+
     </div>
   );
 }
