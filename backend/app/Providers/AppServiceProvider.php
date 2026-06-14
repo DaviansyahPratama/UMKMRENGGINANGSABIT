@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\URL; // <-- 1. Pastikan baris ini ada
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +20,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // 2. Tambahkan kode ini untuk memaksa semua URL menggunakan HTTPS di server live
+        if (config('app.env') === 'production' || isset($_SERVER['HTTPS'])) {
+            URL::forceScheme('https');
+        }
     }
 }
