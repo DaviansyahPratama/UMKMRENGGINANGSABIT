@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// Membaca dari file .env. Jika tidak ada, baru otomatis pakai localhost (8000)
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
+// Langsung tembak ke URL Railway kamu yang benar
+const API_BASE_URL = "https://rengginangsabit.up.railway.app/api";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
