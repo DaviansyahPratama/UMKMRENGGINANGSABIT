@@ -1,8 +1,9 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import api from "../../services/api"; // Panggil instansiasi axios langsung
+// 1. IMPORT: Pastikan buildProductImageUrl diimpor dari file api Anda
+import api, { buildProductImageUrl } from "../../services/api";
 import PageMeta from "../../components/common/PageMeta";
-import { Product } from "../../types/Product";
+import type { Product } from "../../types/Product";
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -26,15 +27,11 @@ export default function ProductDetail() {
         if (!mounted) return;
         const data = resp.data;
 
-        // --- TRIK JINAKKAN URL GAMBAR UNTUK DETAIL PRODUK ---
-        let finalImageUrl = "/images/logo/rengginang-sabit.png";
+        // 2. FILTERING: Ambil properti gambar apa pun yang dikirim oleh API
+        const rawImage = data.image || data.image_url || data.image_path || "";
 
-        if (data.image_url) {
-          // Potong path jika ada domain localhost/storage yang tersangkut bawaan DB lama
-          const filename = data.image_url.split("/").pop();
-          // Satukan paksa dengan folder publik produksi HTTPS di Railway
-          finalImageUrl = `https://rengginangsabit.up.railway.app/images/products/${filename}`;
-        }
+        // 3. EKSEKUSI: Lewatkan ke helper untuk mengubah localhost menjadi Railway secara otomatis
+        const finalImageUrl = buildProductImageUrl(rawImage);
 
         setProduct({
           id: data.id,
@@ -43,7 +40,7 @@ export default function ProductDetail() {
           composition: data.composition ?? "",
           category: data.category ?? "",
           price: Number(data.price) || 0,
-          imageUrl: finalImageUrl,
+          imageUrl: finalImageUrl, // Gunakan URL hasil penyaringan dinamis
           isBestSeller: Boolean(data.is_best_seller),
         });
       } catch (err: any) {
@@ -89,9 +86,10 @@ export default function ProductDetail() {
                 alt={product.name}
                 loading="lazy"
                 onError={(event) => {
+                  // Fallback final jika file di server Railway Anda memang tidak ada/terhapus
                   event.currentTarget.src = "/images/logo/rengginang-sabit.png";
                   event.currentTarget.className =
-                    "h-full min-h-[320px] w-full object-cover opacity-50";
+                    "h-full min-h-[320px] w-full object-cover opacity-50 p-8";
                 }}
                 className="h-full min-h-[320px] w-full object-cover"
               />
@@ -132,7 +130,7 @@ export default function ProductDetail() {
                     style: "currency",
                     currency: "IDR",
                     maximumFractionDigits: 0,
-                  }).format(Number(product.price))}
+                  }).format(product.price)}
                 </span>
               </div>
             </div>
