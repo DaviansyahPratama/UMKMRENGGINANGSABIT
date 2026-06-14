@@ -13,20 +13,18 @@ const api = axios.create({
   },
 });
 
-// Fungsi pembuat URL gambar otomatis yang dinamis (Sudah Diperbaiki)
+// Fungsi pembuat URL gambar otomatis yang dinamis (Sudah Diperbaiki Total)
 export function buildProductImageUrl(
   imagePath: string | null | undefined,
 ): string {
   if (!imagePath) return "/images/logo/rengginang-sabit.png"; // Gambar default jika kosong
 
-  // Jika backend mengirimkan URL utuh (http/https)
+  // 1. Jika backend mengirimkan URL utuh (http/https)
   if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
     // CEK SPESIFIK: Jika URL utuh tersebut ternyata mengarah ke Localhost / IP lokal komputer
     if (imagePath.includes("localhost") || imagePath.includes("127.0.0.1")) {
-      // Ambil nama filenya saja di paling ujung string (misal: nama-file.jpg)
       const filename = imagePath.split("/").pop();
-
-      // Paksa arahkan ke folder penyimpanan aset publik di server Railway Anda
+      // Arahkan ke folder storage link bawaan Laravel di Railway
       return `${BASE_URL}/storage/products/${filename}`;
     }
 
@@ -34,12 +32,22 @@ export function buildProductImageUrl(
     return imagePath;
   }
 
-  // Jika path dari DB berupa relative path yang diawali dengan garis miring (/)
+  // 2. Jika path dari DB berupa string relatif "products/namafile.png" (Data lama kamu)
+  if (imagePath.startsWith("products/")) {
+    return `${BASE_URL}/storage/${imagePath}`;
+  }
+
+  // 3. Jika path dari DB berupa string relatif "images/products/namafile.png" (Data dari Controller barumu)
+  if (imagePath.startsWith("images/")) {
+    return `${BASE_URL}/${imagePath}`;
+  }
+
+  // 4. Jika path dari DB berupa relative path yang diawali dengan garis miring (/)
   if (imagePath.startsWith("/")) {
     return `${BASE_URL}${imagePath}`;
   }
 
-  // Gabungkan BASE_URL langsung dengan relative path dari database
+  // Gabungkan BASE_URL langsung dengan relative path dari database sebagai cadangan
   return `${BASE_URL}/${imagePath}`;
 }
 
