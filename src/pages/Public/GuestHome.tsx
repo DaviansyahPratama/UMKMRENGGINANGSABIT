@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import PageMeta from "../../components/common/PageMeta";
 import { Link } from "react-router-dom";
-import api from "../../services/api";
+import api, { buildProductImageUrl } from "../../services/api"; // 👈 Ditambahkan buildProductImageUrl
 import { Product } from "../../types/Product";
 
 const WHATSAPP_URL =
@@ -15,18 +15,21 @@ export default function GuestHome() {
     const loadProducts = async () => {
       try {
         const response = await api.get("/products");
-        const loadedProducts: Product[] = response.data.map((item: any) => ({
-          id: item.id,
-          name: item.name,
-          description: item.description,
-          composition: item.composition,
-          category: item.category,
-          price: item.price,
-          imageUrl: item.image_url
-            ? `http://127.0.0.1:8000/storage/${item.image_url}`
-            : "",
-          isBestSeller: Boolean(item.is_best_seller),
-        }));
+        const loadedProducts: Product[] = response.data.map((item: any) => {
+          // Deteksi otomatis nama field dari backend agar aman
+          const imageFile = item.image || item.image_url || item.image_path || "";
+
+          return {
+            id: item.id,
+            name: item.name,
+            description: item.description,
+            composition: item.composition,
+            category: item.category,
+            price: item.price,
+            imageUrl: buildProductImageUrl(imageFile), // 👈 Menggunakan fungsi otomatis agar dinamis
+            isBestSeller: Boolean(item.is_best_seller),
+          };
+        });
 
         loadedProducts.sort((a, b) => Number(b.isBestSeller) - Number(a.isBestSeller));
         setProducts(loadedProducts);
@@ -132,6 +135,7 @@ export default function GuestHome() {
             <img
               src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1400&auto=format&fit=crop"
               className="h-96 w-full object-cover"
+              alt="Tentang Rengginang Sabit"
             />
           </div>
 
@@ -175,21 +179,27 @@ export default function GuestHome() {
               products.slice(0, 6).map((item) => (
                 <div
                   key={item.id}
-                  className="bg-white border border-[#C8A24A]/20 hover:-translate-y-1 transition"
+                  className="bg-white border border-[#C8A24A]/20 hover:-translate-y-1 transition flex flex-col justify-between"
                 >
                   <img
-                    src={item.imageUrl}
+                    src={item.imageUrl || "/images/logo/rengginang-sabit.png"}
+                    onError={(event) => {
+                      event.currentTarget.src = "/images/logo/rengginang-sabit.png";
+                    }}
                     className="h-72 w-full object-cover"
+                    alt={item.name}
                   />
 
-                  <div className="p-6">
-                    <h3 className="font-serif text-xl font-bold uppercase">
-                      {item.name}
-                    </h3>
+                  <div className="p-6 flex-1 flex flex-col justify-between">
+                    <div>
+                      <h3 className="font-serif text-xl font-bold uppercase">
+                        {item.name}
+                      </h3>
 
-                    <p className="text-sm text-[#2B1B12]/70 mt-2 h-12 overflow-hidden">
-                      {item.description}
-                    </p>
+                      <p className="text-sm text-[#2B1B12]/70 mt-2 h-12 overflow-hidden">
+                        {item.description}
+                      </p>
+                    </div>
 
                     <div className="mt-6 flex justify-between items-center border-t border-[#C8A24A]/20 pt-4">
                       <span className="text-[#C8A24A] font-bold">
