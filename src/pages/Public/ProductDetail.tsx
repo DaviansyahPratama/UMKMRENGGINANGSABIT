@@ -1,6 +1,5 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-// 1. IMPORT: Pastikan buildProductImageUrl diimpor dari file api Anda
 import api, { buildProductImageUrl } from "../../services/api";
 import PageMeta from "../../components/common/PageMeta";
 import type { Product } from "../../types/Product";
@@ -27,10 +26,10 @@ export default function ProductDetail() {
         if (!mounted) return;
         const data = resp.data;
 
-        // 2. FILTERING: Ambil properti gambar apa pun yang dikirim oleh API
-        const rawImage = data.image || data.image_url || data.image_path || "";
+        // Ambil properti gambar apa pun yang dikirim oleh API
+        const rawImage = data.image_url || data.image || data.image_path || "";
 
-        // 3. EKSEKUSI: Lewatkan ke helper untuk mengubah localhost menjadi Railway secara otomatis
+        // Lewatkan ke helper dasar
         const finalImageUrl = buildProductImageUrl(rawImage);
 
         setProduct({
@@ -40,7 +39,7 @@ export default function ProductDetail() {
           composition: data.composition ?? "",
           category: data.category ?? "",
           price: Number(data.price) || 0,
-          imageUrl: finalImageUrl, // Gunakan URL hasil penyaringan dinamis
+          imageUrl: finalImageUrl,
           isBestSeller: Boolean(data.is_best_seller),
         });
       } catch (err: any) {
@@ -70,6 +69,14 @@ export default function ProductDetail() {
       <p className="text-center text-white py-20">Produk tidak ditemukan.</p>
     );
 
+  // --- LOGIKA PENYARING DARURAT (Sapu Jagat) ---
+  // Jika karena alasan tertentu state imageUrl masih menyimpan localhost, kita jinakkan di sini sebelum masuk ke src
+  const safeSrc =
+    product.imageUrl.includes("127.0.0.1") ||
+    product.imageUrl.includes("localhost")
+      ? `https://rengginangsabit.up.railway.app/storage/products/${product.imageUrl.split("/").pop()}`
+      : product.imageUrl;
+
   return (
     <>
       <PageMeta
@@ -82,11 +89,11 @@ export default function ProductDetail() {
           <div className="md:col-span-1">
             <div className="overflow-hidden rounded-3xl bg-slate-900 shadow-xl">
               <img
-                src={product.imageUrl}
+                src={safeSrc} // Menggunakan URL yang sudah di-double check bebas localhost
                 alt={product.name}
                 loading="lazy"
                 onError={(event) => {
-                  // Fallback final jika file di server Railway Anda memang tidak ada/terhapus
+                  // Jika file gambar di server Railway tidak ditemukan (404), switch ke logo default
                   event.currentTarget.src = "/images/logo/rengginang-sabit.png";
                   event.currentTarget.className =
                     "h-full min-h-[320px] w-full object-cover opacity-50 p-8";
