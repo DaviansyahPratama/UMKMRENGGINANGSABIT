@@ -9,9 +9,15 @@ class ProductController extends Controller
 {
     public function index()
     {
-        return response()->json(
-            Product::latest()->get()
-        );
+        // Modifikasi data yang keluar agar image_url ditambahkan domain backend otomatis
+        $products = Product::latest()->get()->map(function ($product) {
+            if ($product->image_url) {
+                $product->image_url = asset($product->image_url);
+            }
+            return $product;
+        });
+
+        return response()->json($products);
     }
 
     public function store(Request $request)
@@ -29,14 +35,10 @@ class ProductController extends Controller
 
         if ($request->hasFile('image')) {
             $file = $request->file('image');
-            
-            // Buat nama file unik berdasarkan waktu biar gak bentrok
             $filename = time() . '_' . $file->getClientOriginalName();
-            
-            // Pindahkan file langsung ke folder public/images/products yang sifatnya permanen
             $file->move(public_path('images/products'), $filename);
             
-            // Jalur ringkas ini yang kita simpan ke database
+            // Tetap simpan jalur ringkas ke database agar rapi
             $imagePath = 'images/products/' . $filename;
         }
 
@@ -50,11 +52,21 @@ class ProductController extends Controller
             'is_best_seller' => $request->is_best_seller ?? false,
         ]);
 
+        // Ubah output respons agar langsung mengirimkan URL penuh ke frontend setelah sukses bikin produk
+        if ($product->image_url) {
+            $product->image_url = asset($product->image_url);
+        }
+
         return response()->json($product);
     }
 
     public function show(Product $product)
     {
+        // Ubah output respons single product agar berdomain penuh
+        if ($product->image_url) {
+            $product->image_url = asset($product->image_url);
+        }
+
         return response()->json($product);
     }
 
@@ -81,12 +93,11 @@ class ProductController extends Controller
         if ($request->hasFile('image')) {
             $file = $request->file('image');
 
-            // Hapus gambar lama dari folder public (jika filenya ada)
+            // Hapus gambar lama menggunakan path asli database
             if ($product->image_url && file_exists(public_path($product->image_url))) {
                 @unlink(public_path($product->image_url));
             }
 
-            // Simpan gambar baru ke folder public/images/products
             $filename = time() . '_' . $file->getClientOriginalName();
             $file->move(public_path('images/products'), $filename);
             
@@ -95,12 +106,16 @@ class ProductController extends Controller
 
         $product->update($data);
 
+        // Ubah output respons setelah update berhasil
+        if ($product->image_url) {
+            $product->image_url = asset($product->image_url);
+        }
+
         return response()->json($product);
     }
 
     public function destroy(Product $product)
     {
-        // Hapus file gambar asli dari folder public saat produk dihapus
         if ($product->image_url && file_exists(public_path($product->image_url))) {
             @unlink(public_path($product->image_url));
         }
