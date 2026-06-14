@@ -19,13 +19,18 @@ export function buildProductImageUrl(
 ): string {
   if (!imagePath) return "/images/logo/rengginang-sabit.png"; // Gambar default jika kosong
 
-  // Jika backend sudah telanjur mengirimkan URL utuh (http/https), pakai langsung
+  // Jika backend sudah mengirimkan URL utuh (http/https), pakai langsung
   if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
     return imagePath;
   }
 
-  // Jika hanya nama file/path saja, sambungkan dengan BASE_URL Railway
-  return `${BASE_URL}/storage/${imagePath}`;
+  // Jika path dari DB sudah diawali dengan garis miring (/)
+  if (imagePath.startsWith("/")) {
+    return `${BASE_URL}${imagePath}`;
+  }
+
+  // Gabungkan BASE_URL langsung dengan path dari database (images/products/filename.jpg)
+  return `${BASE_URL}/${imagePath}`;
 }
 
 export default api;
