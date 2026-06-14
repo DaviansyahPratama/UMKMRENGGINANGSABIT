@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -29,8 +28,16 @@ class ProductController extends Controller
         $imagePath = null;
 
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')
-                ->store('products', 'public');
+            $file = $request->file('image');
+            
+            // Buat nama file unik berdasarkan waktu biar gak bentrok
+            $filename = time() . '_' . $file->getClientOriginalName();
+            
+            // Pindahkan file langsung ke folder public/images/products yang sifatnya permanen
+            $file->move(public_path('images/products'), $filename);
+            
+            // Jalur ringkas ini yang kita simpan ke database
+            $imagePath = 'images/products/' . $filename;
         }
 
         $product = Product::create([
@@ -72,15 +79,18 @@ class ProductController extends Controller
         ];
 
         if ($request->hasFile('image')) {
+            $file = $request->file('image');
 
-            // hapus gambar lama
-            if ($product->image_url) {
-                Storage::disk('public')->delete($product->image_url);
+            // Hapus gambar lama dari folder public (jika filenya ada)
+            if ($product->image_url && file_exists(public_path($product->image_url))) {
+                @unlink(public_path($product->image_url));
             }
 
-            $data['image_url'] = $request
-                ->file('image')
-                ->store('products', 'public');
+            // Simpan gambar baru ke folder public/images/products
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('images/products'), $filename);
+            
+            $data['image_url'] = 'images/products/' . $filename;
         }
 
         $product->update($data);
@@ -90,8 +100,9 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
-        if ($product->image_url) {
-            Storage::disk('public')->delete($product->image_url);
+        // Hapus file gambar asli dari folder public saat produk dihapus
+        if ($product->image_url && file_exists(public_path($product->image_url))) {
+            @unlink(public_path($product->image_url));
         }
 
         $product->delete();
