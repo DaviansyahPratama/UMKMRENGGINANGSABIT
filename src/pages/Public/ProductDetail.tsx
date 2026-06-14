@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import api, { buildProductImageUrl } from "../../services/api";
+import api from "../../services/api"; // Panggil instansiasi axios langsung
 import PageMeta from "../../components/common/PageMeta";
 import { Product } from "../../types/Product";
 
@@ -26,6 +26,16 @@ export default function ProductDetail() {
         if (!mounted) return;
         const data = resp.data;
 
+        // --- TRIK JINAKKAN URL GAMBAR UNTUK DETAIL PRODUK ---
+        let finalImageUrl = "/images/logo/rengginang-sabit.png";
+
+        if (data.image_url) {
+          // Potong path jika ada domain localhost/storage yang tersangkut bawaan DB lama
+          const filename = data.image_url.split("/").pop();
+          // Satukan paksa dengan folder publik produksi HTTPS di Railway
+          finalImageUrl = `https://rengginangsabit.up.railway.app/images/products/${filename}`;
+        }
+
         setProduct({
           id: data.id,
           name: data.name,
@@ -33,12 +43,16 @@ export default function ProductDetail() {
           composition: data.composition ?? "",
           category: data.category ?? "",
           price: Number(data.price) || 0,
-          imageUrl: buildProductImageUrl(data.image_url),
+          imageUrl: finalImageUrl,
           isBestSeller: Boolean(data.is_best_seller),
         });
       } catch (err: any) {
         if (!mounted) return;
-        setError(err?.response?.data?.message || err?.message || "Gagal memuat detail produk.");
+        setError(
+          err?.response?.data?.message ||
+            err?.message ||
+            "Gagal memuat detail produk.",
+        );
       } finally {
         if (mounted) setLoading(false);
       }
@@ -51,9 +65,13 @@ export default function ProductDetail() {
     };
   }, [id]);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p className="text-red-500">{error}</p>;
-  if (!product) return <p>Produk tidak ditemukan.</p>;
+  if (loading)
+    return <p className="text-center text-white py-20">Loading...</p>;
+  if (error) return <p className="text-red-500 text-center py-20">{error}</p>;
+  if (!product)
+    return (
+      <p className="text-center text-white py-20">Produk tidak ditemukan.</p>
+    );
 
   return (
     <>
@@ -67,12 +85,13 @@ export default function ProductDetail() {
           <div className="md:col-span-1">
             <div className="overflow-hidden rounded-3xl bg-slate-900 shadow-xl">
               <img
-                src={product.imageUrl || "/images/logo/rengginang-sabit.png"}
+                src={product.imageUrl}
                 alt={product.name}
                 loading="lazy"
                 onError={(event) => {
                   event.currentTarget.src = "/images/logo/rengginang-sabit.png";
-                  event.currentTarget.className = "h-full min-h-[320px] w-full object-cover opacity-50";
+                  event.currentTarget.className =
+                    "h-full min-h-[320px] w-full object-cover opacity-50";
                 }}
                 className="h-full min-h-[320px] w-full object-cover"
               />
@@ -82,7 +101,9 @@ export default function ProductDetail() {
           <div className="md:col-span-2">
             <div className="space-y-6 rounded-3xl bg-slate-900 p-8 shadow-xl">
               <div>
-                <h1 className="text-3xl font-extrabold text-white">{product.name}</h1>
+                <h1 className="text-3xl font-extrabold text-white">
+                  {product.name}
+                </h1>
                 {product.isBestSeller && (
                   <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-red-500 px-3 py-1 text-xs font-bold text-white">
                     🔥 BEST SELLER
@@ -91,11 +112,15 @@ export default function ProductDetail() {
               </div>
 
               <div className="space-y-4">
-                <p className="text-gray-300 leading-relaxed">{product.description}</p>
+                <p className="text-gray-300 leading-relaxed">
+                  {product.description}
+                </p>
 
                 {product.composition && (
                   <div>
-                    <h3 className="mb-2 text-lg font-semibold text-white">Komposisi</h3>
+                    <h3 className="mb-2 text-lg font-semibold text-white">
+                      Komposisi
+                    </h3>
                     <p className="text-gray-400">{product.composition}</p>
                   </div>
                 )}

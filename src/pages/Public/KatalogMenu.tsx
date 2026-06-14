@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import PageMeta from "../../components/common/PageMeta";
 import { Link } from "react-router-dom";
-import api, { buildProductImageUrl } from "../../services/api";
+import api from "../../services/api";
 import { Product } from "../../types/Product";
 
 export default function KatalogMenu() {
@@ -13,16 +13,28 @@ export default function KatalogMenu() {
     try {
       const response = await api.get("/products");
 
-      const products = response.data.map((item: any) => ({
-        id: item.id,
-        name: item.name,
-        description: item.description,
-        composition: item.composition,
-        category: item.category,
-        price: item.price,
-        imageUrl: buildProductImageUrl(item.image_url),
-        isBestSeller: Boolean(item.is_best_seller),
-      }));
+      const products = response.data.map((item: any) => {
+        // --- TRIK JINAKKAN URL GAMBAR LANGSUNG DI TEMPAT ---
+        let finalImageUrl = "/images/logo/rengginang-sabit.png";
+
+        if (item.image_url) {
+          // Ambil nama filenya saja (buang folder localhost / storage / products jika ada)
+          const filename = item.image_url.split("/").pop();
+          // Paksa satukan langsung dengan domain produksi HTTPS Railway kamu
+          finalImageUrl = `https://rengginangsabit.up.railway.app/images/products/${filename}`;
+        }
+
+        return {
+          id: item.id,
+          name: item.name,
+          description: item.description,
+          composition: item.composition,
+          category: item.category,
+          price: item.price,
+          imageUrl: finalImageUrl,
+          isBestSeller: Boolean(item.is_best_seller),
+        };
+      });
 
       products.sort((a: Product, b: Product) => {
         return Number(b.isBestSeller) - Number(a.isBestSeller);
@@ -122,11 +134,12 @@ export default function KatalogMenu() {
               >
                 <div className="overflow-hidden">
                   <img
-                    src={item.imageUrl || "/images/logo/rengginang-sabit.png"}
+                    src={item.imageUrl}
                     loading="lazy"
                     alt={`Gambar ${item.name}`}
                     onError={(event) => {
-                      event.currentTarget.src = "/images/logo/rengginang-sabit.png";
+                      event.currentTarget.src =
+                        "/images/logo/rengginang-sabit.png";
                     }}
                     className="
                       h-72
@@ -143,16 +156,16 @@ export default function KatalogMenu() {
                   {item.isBestSeller && (
                     <span
                       className="
-      inline-block
-      rounded-full
-      bg-red-500
-      px-3
-      py-1
-      text-xs
-      font-bold
-      text-white
-      shadow-md
-    "
+                        inline-block
+                        rounded-full
+                        bg-red-500
+                        px-3
+                        py-1
+                        text-xs
+                        font-bold
+                        text-white
+                        shadow-md
+                      "
                     >
                       🔥 BEST SELLER
                     </span>
@@ -174,7 +187,7 @@ export default function KatalogMenu() {
 
                     <Link
                       to={`/products/${item.id}`}
-                      className={`rounded-xl bg-amber-400 px-4 py-2 text-sm font-semibold text-slate-900 shadow-md hover:bg-amber-500 transition-all duration-300`}
+                      className="rounded-xl bg-amber-400 px-4 py-2 text-sm font-semibold text-slate-900 shadow-md hover:bg-amber-500 transition-all duration-300"
                     >
                       Detail
                     </Link>
