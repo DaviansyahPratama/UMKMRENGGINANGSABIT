@@ -9,21 +9,14 @@ export default function KatalogMenu() {
   const [menuItems, setMenuItems] = useState<Product[]>([]);
   const [filteredMenu, setFilteredMenu] = useState<Product[]>([]);
 
+  const BASE_URL =
+    import.meta.env.VITE_API_URL || "https://rengginangsabit.up.railway.app";
+
   const loadProducts = async () => {
     try {
       const response = await api.get("/products");
 
       const products = response.data.map((item: any) => {
-        // --- TRIK JINAKKAN URL GAMBAR LANGSUNG DI TEMPAT ---
-        let finalImageUrl = "/images/logo/rengginang-sabit.png";
-
-        if (item.image_url) {
-          // Ambil nama filenya saja (buang folder localhost / storage / products jika ada)
-          const filename = item.image_url.split("/").pop();
-          // Paksa satukan langsung dengan domain produksi HTTPS Railway kamu
-          finalImageUrl = `https://rengginangsabit.up.railway.app/images/products/${filename}`;
-        }
-
         return {
           id: item.id,
           name: item.name,
@@ -31,14 +24,20 @@ export default function KatalogMenu() {
           composition: item.composition,
           category: item.category,
           price: item.price,
-          imageUrl: finalImageUrl,
+
+          // FIX IMAGE URL (AMAN 100%)
+          imageUrl: item.image_url
+            ? `${BASE_URL}/storage/${item.image_url}`
+            : "/images/logo/rengginang-sabit.png",
+
           isBestSeller: Boolean(item.is_best_seller),
         };
       });
 
-      products.sort((a: Product, b: Product) => {
-        return Number(b.isBestSeller) - Number(a.isBestSeller);
-      });
+      products.sort(
+        (a: Product, b: Product) =>
+          Number(b.isBestSeller) - Number(a.isBestSeller),
+      );
 
       setMenuItems(products);
       setFilteredMenu(products);
@@ -58,7 +57,7 @@ export default function KatalogMenu() {
       );
 
       setFilteredMenu(result);
-    }, 500);
+    }, 300);
 
     return () => clearTimeout(timeout);
   }, [query, menuItems]);
@@ -94,21 +93,7 @@ export default function KatalogMenu() {
             placeholder="Cari menu rengginang..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="
-              w-full
-              rounded-full
-              border-2
-              border-amber-400
-              bg-slate-800
-              px-6
-              py-4
-              text-white
-              placeholder:text-gray-400
-              shadow-lg
-              focus:outline-none
-              focus:ring-4
-              focus:ring-amber-300
-            "
+            className="w-full rounded-full border-2 border-amber-400 bg-slate-800 px-6 py-4 text-white placeholder:text-gray-400 shadow-lg focus:outline-none focus:ring-4 focus:ring-amber-300"
           />
         </div>
 
@@ -118,58 +103,27 @@ export default function KatalogMenu() {
             filteredMenu.map((item) => (
               <div
                 key={item.id}
-                className="
-                  group
-                  overflow-hidden
-                  rounded-3xl
-                  bg-slate-800
-                  border
-                  border-amber-400
-                  shadow-xl
-                  transition-all
-                  duration-300
-                  hover:-translate-y-2
-                  hover:shadow-amber-500/20
-                "
+                className="group overflow-hidden rounded-3xl bg-slate-800 border border-amber-400 shadow-xl transition-all duration-300 hover:-translate-y-2 hover:shadow-amber-500/20"
               >
                 <div className="overflow-hidden">
                   <img
                     src={item.imageUrl}
                     loading="lazy"
                     alt={`Gambar ${item.name}`}
-                    onError={(event) => {
-                      event.currentTarget.src =
-                        "/images/logo/rengginang-sabit.png";
+                    onError={(e) => {
+                      e.currentTarget.src = "/images/logo/rengginang-sabit.png";
                     }}
-                    className="
-                      h-72
-                      w-full
-                      object-cover
-                      transition
-                      duration-500
-                      group-hover:scale-110
-                    "
+                    className="h-72 w-full object-cover transition duration-500 group-hover:scale-110"
                   />
                 </div>
 
                 <div className="p-6">
                   {item.isBestSeller && (
-                    <span
-                      className="
-                        inline-block
-                        rounded-full
-                        bg-red-500
-                        px-3
-                        py-1
-                        text-xs
-                        font-bold
-                        text-white
-                        shadow-md
-                      "
-                    >
+                    <span className="inline-block rounded-full bg-red-500 px-3 py-1 text-xs font-bold text-white shadow-md">
                       🔥 BEST SELLER
                     </span>
                   )}
+
                   <h2 className="mt-3 text-2xl font-bold text-white">
                     {item.name}
                   </h2>
