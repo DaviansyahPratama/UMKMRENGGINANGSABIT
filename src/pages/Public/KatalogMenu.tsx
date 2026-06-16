@@ -47,10 +47,6 @@ export default function KatalogMenu() {
   };
 
   useEffect(() => {
-    loadProducts();
-  }, []);
-
-  useEffect(() => {
     const timeout = setTimeout(() => {
       const result = menuItems.filter((item) =>
         item.name.toLowerCase().includes(query.toLowerCase()),
@@ -61,6 +57,10 @@ export default function KatalogMenu() {
 
     return () => clearTimeout(timeout);
   }, [query, menuItems]);
+
+  useEffect(() => {
+    loadProducts();
+  }, []);
 
   return (
     <>

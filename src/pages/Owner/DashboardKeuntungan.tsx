@@ -113,7 +113,7 @@ export default function DashboardKeuntungan() {
         {/* BREADCRUMB */}
         <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-800 pb-4">
           <div className="text-gray-900 dark:text-white">
-            <PageBreadcrumb pageTitle="Dashboard Keuntungan (KF06)" />
+            <PageBreadcrumb pageTitle="Dashboard Keuntungan" />
           </div>
         </div>
 
@@ -187,7 +187,7 @@ export default function DashboardKeuntungan() {
                     to="/owner/keuntungan"
                     className="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 text-xs font-semibold text-gray-700 shadow-xs hover:bg-gray-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors text-center"
                   >
-                    Lembar Kerja KF05
+                    Lembar Kerja
                   </Link>
                 </div>
               </div>

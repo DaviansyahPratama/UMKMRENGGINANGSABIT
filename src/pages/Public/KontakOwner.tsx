@@ -26,8 +26,7 @@ export default function KontakOwner() {
           </h1>
 
           <p className="mt-4 text-lg text-gray-300 max-w-xl mx-auto">
-            Hubungi owner untuk pemesanan, kerja sama,
-            ataupun informasi produk Rengginang Sabit.
+            Informasi lebih lanjut tentang produk, pemesanan, atau pertanyaan lainnya? Jangan ragu untuk menghubungi owner resmi Rengginang Sabit melalui WhatsApp di bawah ini.
           </p>
 
         </section>

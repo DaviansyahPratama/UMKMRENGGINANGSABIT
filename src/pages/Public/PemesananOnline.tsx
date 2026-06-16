@@ -1,6 +1,6 @@
 import PageBreadcrumb from "../../components/common/PageBreadCrumb";
 import PageMeta from "../../components/common/PageMeta";
-import { Link } from "react-router-dom"; // Diselaraskan menggunakan react-router-dom seperti layout lainnya
+import { Link } from "react-router-dom";
 
 const SHOPEE_URL = "https://shopee.co.id/";
 const WHATSAPP_URL =
@@ -18,7 +18,7 @@ export default function PemesananOnline() {
       <div className="space-y-6 bg-black text-white min-h-screen pt-28 px-6 pb-20">
         
         {/* Breadcrumb bawaan proyek Anda */}
-        <PageBreadcrumb pageTitle="Pemesanan Online (KF10)" />
+        <PageBreadcrumb pageTitle="Pemesanan Online" />
 
         {/* Kotak pilihan platform dirubah menjadi rounded-none dengan border transparan tipis */}
         <div className="rounded-none border border-white/10 bg-white/[0.02] p-8 max-w-4xl mx-auto shadow-2xl">

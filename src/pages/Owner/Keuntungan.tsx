@@ -44,7 +44,7 @@ export default function Keuntungan() {
         {/* BREADCRUMB */}
         <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-800 pb-4">
           <div className="text-gray-900 dark:text-white">
-            <PageBreadcrumb pageTitle="Perhitungan Keuntungan (KF05)" />
+            <PageBreadcrumb pageTitle="Perhitungan Keuntungan" />
           </div>
         </div>
 
@@ -100,7 +100,7 @@ export default function Keuntungan() {
                 Ringkasan Profit Tren Mingguan
               </h3>
               <p className="text-xs text-gray-400 dark:text-slate-400 mt-0.5">
-                Evaluasi matriks parameter lembar data KF05 (Rentang 8 Minggu Terakhir).
+                Evaluasi matriks parameter lembar data (Rentang 8 Minggu Terakhir).
               </p>
             </div>
             

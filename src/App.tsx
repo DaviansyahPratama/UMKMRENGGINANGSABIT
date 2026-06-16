@@ -1,168 +1,119 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { ScrollToTop } from "./components/common/ScrollToTop";
-import RequireOwner from "./components/auth/RequireOwner";
-import AppLayout from "./layout/multilayout/AppLayout";
-import GuestLayout from "./layout/multilayout/GuestLayout";
-import ProductDetail from "./pages/Public/ProductDetail";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; // React Router
+import { lazy, Suspense } from "react"; // Lazy Loading + Suspense
+
+import { ScrollToTop } from "./components/common/ScrollToTop"; // Nested Components
+import RequireOwner from "./components/auth/RequireOwner"; // Login API + Axios (auth guard)
+
+import AppLayout from "./layout/multilayout/AppLayout"; // Multi Layout & Nested Routes
+import GuestLayout from "./layout/multilayout/GuestLayout"; // Multi Layout & Nested Routes
 
 /* ================================= */
 /* AUTH */
 /* ================================= */
-import SignIn from "./pages/AuthPages/SignIn";
+const SignIn = lazy(() => import("./pages/AuthPages/SignIn")); // Lazy Loading
 
 /* ================================= */
 /* ERROR PAGE */
 /* ================================= */
-import NotFound from "./pages/OtherPage/NotFound";
+const NotFound = lazy(() => import("./pages/OtherPage/NotFound")); // Lazy Loading
 
 /* ================================= */
 /* PUBLIC PAGES */
 /* ================================= */
-import LandingPage from "./pages/Public/LandingPage";
-import KatalogMenu from "./pages/Public/KatalogMenu";
-import OutletLokasi from "./pages/Public/OutletLokasi";
-import KontakOwner from "./pages/Public/KontakOwner";
+const LandingPage = lazy(() => import("./pages/Public/LandingPage")); // Lazy Loading
+const KatalogMenu = lazy(() => import("./pages/Public/KatalogMenu")); // Lazy Loading
+const ProductDetail = lazy(() => import("./pages/Public/ProductDetail")); // Dynamic Route
+const OutletLokasi = lazy(() => import("./pages/Public/OutletLokasi")); // useEffect + API
+const KontakOwner = lazy(() => import("./pages/Public/KontakOwner")); // Lazy Loading
 
 /* ================================= */
 /* OWNER PAGES */
 /* ================================= */
-import Home from "./pages/Dashboard/Home";
-import ModalPenjualan from "./pages/Owner/ModalPenjualan";
-import DistribusiStok from "./pages/Owner/DistribusiStok";
-import TransferOutlet from "./pages/Owner/TransferOutlet";
-import Keuntungan from "./pages/Owner/Keuntungan";
-import DashboardKeuntungan from "./pages/Owner/DashboardKeuntungan";
-import StatistikOutlet from "./pages/Owner/StatistikOutlet";
-import OutletManagement from "./pages/Owner/OutletManagement";
-import MenuManagement from "./pages/Owner/MenuManagement";
+const Home = lazy(() => import("./pages/Dashboard/Home")); // useEffect (dashboard data)
+
+const ModalPenjualan = lazy(() => import("./pages/Owner/ModalPenjualan")); // Component JavaScript
+const DistribusiStok = lazy(() => import("./pages/Owner/DistribusiStok")); // Component JavaScript
+const TransferOutlet = lazy(() => import("./pages/Owner/TransferOutlet")); // Component JavaScript
+const Keuntungan = lazy(() => import("./pages/Owner/Keuntungan")); // Component JavaScript
+const DashboardKeuntungan = lazy(() => import("./pages/Owner/DashboardKeuntungan")); // useEffect state
+const StatistikOutlet = lazy(() => import("./pages/Owner/StatistikOutlet")); // useEffect state
+const OutletManagement = lazy(() => import("./pages/Owner/OutletManagement")); // Component dengan Props
+const MenuManagement = lazy(() => import("./pages/Owner/MenuManagement")); // Component dengan Props
 
 export default function App() {
   return (
     <Router>
-      <ScrollToTop />
+      <ScrollToTop /> {/* Parent-Child Component */}
 
-      <Routes>
+      <Suspense fallback={<div>Loading...</div>}> {/* Lazy Loading + Suspense */}
+        <Routes>
 
-        {/* ================================= */}
-        {/* PUBLIC / LANDING PAGE */}
-        {/* ================================= */}
-        <Route element={<GuestLayout />}>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/menu" element={<KatalogMenu />} />
+          {/* PUBLIC / LANDING PAGE */}
+          <Route element={<GuestLayout />}> {/* Nested Components */}
+            <Route path="/" element={<LandingPage />} /> {/* React Router + Component JS */}
+            <Route path="/menu" element={<KatalogMenu />} /> {/* React Router */}
+            <Route path="/products/:id" element={<ProductDetail />} /> {/* Dynamic Route */}
+            <Route path="/outlets" element={<OutletLokasi />} /> {/* useEffect */}
+            <Route path="/kontak" element={<KontakOwner />} /> {/* React Router */}
+          </Route>
 
-          {/* DETAIL PRODUK */}
-          <Route path="/products/:id" element={<ProductDetail />} />
+          {/* OWNER / ADMIN */}
+          <Route element={<AppLayout />}> {/* Multi Layout & Nested Routes */}
 
-          <Route path="/outlets" element={<OutletLokasi />} />
+            <Route
+              path="/dashboard"
+              element={<RequireOwner><Home /></RequireOwner>} // Login API + Axios
+            />
 
-          <Route path="/kontak" element={<KontakOwner />} />
-        </Route>
+            <Route
+              path="/owner/modal-penjualan"
+              element={<RequireOwner><ModalPenjualan /></RequireOwner>} // Component JS
+            />
 
-        {/* ================================= */}
-        {/* OWNER / ADMIN */}
-        {/* ================================= */}
-        <Route element={<AppLayout />}>
+            <Route
+              path="/owner/distribusi-stok"
+              element={<RequireOwner><DistribusiStok /></RequireOwner>} // Component JS
+            />
 
-          <Route
-            path="/dashboard"
-            element={
-              <RequireOwner>
-                <Home />
-              </RequireOwner>
-            }
-          />
+            <Route
+              path="/owner/transfer-outlet"
+              element={<RequireOwner><TransferOutlet /></RequireOwner>} // Component JS
+            />
 
-          <Route
-            path="/owner/modal-penjualan"
-            element={
-              <RequireOwner>
-                <ModalPenjualan />
-              </RequireOwner>
-            }
-          />
+            <Route
+              path="/owner/outlet-management"
+              element={<RequireOwner><OutletManagement /></RequireOwner>} // Component dengan Props
+            />
 
-          <Route
-            path="/owner/distribusi-stok"
-            element={
-              <RequireOwner>
-                <DistribusiStok />
-              </RequireOwner>
-            }
-          />
+            <Route
+              path="/owner/menu-management"
+              element={<RequireOwner><MenuManagement /></RequireOwner>} // Component dengan Props
+            />
 
-          <Route
-            path="/owner/transfer-outlet"
-            element={
-              <RequireOwner>
-                <TransferOutlet />
-              </RequireOwner>
-            }
-          />
+            <Route
+              path="/owner/keuntungan"
+              element={<RequireOwner><Keuntungan /></RequireOwner>} // Component JS
+            />
 
-          <Route
-            path="/owner/outlet-management"
-            element={
-              <RequireOwner>
-                <OutletManagement />
-              </RequireOwner>
-            }
-          />
+            <Route
+              path="/owner/dashboard-keuntungan"
+              element={<RequireOwner><DashboardKeuntungan /></RequireOwner>} // useEffect state
+            />
 
-          <Route
-            path="/owner/menu-management"
-            element={
-              <RequireOwner>
-                <MenuManagement />
-              </RequireOwner>
-            }
-          />
+            <Route
+              path="/owner/statistik-outlet"
+              element={<RequireOwner><StatistikOutlet /></RequireOwner>} // useEffect state
+            />
+          </Route>
 
-          <Route
-            path="/owner/keuntungan"
-            element={
-              <RequireOwner>
-                <Keuntungan />
-              </RequireOwner>
-            }
-          />
+          {/* AUTH */}
+          <Route path="/signin" element={<SignIn />} /> {/* Lazy Loading */}
 
-          <Route
-            path="/owner/dashboard-keuntungan"
-            element={
-              <RequireOwner>
-                <DashboardKeuntungan />
-              </RequireOwner>
-            }
-          />
+          {/* NOT FOUND */}
+          <Route path="*" element={<NotFound />} /> {/* Lazy Loading */}
 
-          <Route
-            path="/owner/statistik-outlet"
-            element={
-              <RequireOwner>
-                <StatistikOutlet />
-              </RequireOwner>
-            }
-          />
-
-        </Route>
-
-        {/* ================================= */}
-        {/* AUTH */}
-        {/* ================================= */}
-        <Route
-          path="/signin"
-          element={<SignIn />}
-        />
-
-        {/* ================================= */}
-        {/* NOT FOUND */}
-        {/* ================================= */}
-        <Route
-          path="*"
-          element={<NotFound />}
-        />
-
-      </Routes>
+        </Routes>
+      </Suspense>
     </Router>
   );
 }

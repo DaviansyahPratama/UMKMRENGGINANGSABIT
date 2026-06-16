@@ -112,7 +112,7 @@ export default function StatistikOutlet() {
         {/* BREADCRUMB */}
         <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-800 pb-4">
           <div className="text-gray-900 dark:text-white">
-            <PageBreadcrumb pageTitle="Statistik Outlet (KF07)" />
+            <PageBreadcrumb pageTitle="Statistik Outlet" />
           </div>
         </div>
 

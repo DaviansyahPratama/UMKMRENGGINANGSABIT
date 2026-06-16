@@ -8,17 +8,21 @@ export default function OutletLokasi() {
   const [outlets, setOutlets] = useState<any[]>([]);
   const [filteredOutlets, setFilteredOutlets] = useState<any[]>([]);
 
+  //UseEffect untuk filter outlet berdasarkan query pencarian dengan debounce 500ms
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      const result = outlets.filter((outlet) =>
-        outlet.name.toLowerCase().includes(query.toLowerCase()),
-      );
+    const timeout = setTimeout(async () => {
+      try {
+        const response = await api.get(`/outlets?q=${query}`);
 
-      setFilteredOutlets(result);
+        setFilteredOutlets(response.data);
+      } catch (error) {
+        console.error(error);
+      }
     }, 500);
-
-    return () => clearTimeout(timeout);
-  }, [query, outlets]);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [query]);
 
   const loadOutlets = async () => {
     try {
@@ -95,7 +99,7 @@ export default function OutletLokasi() {
         <section className="pb-24 px-4 sm:px-6 lg:px-8">
           <div className="max-w-6xl mx-auto space-y-8">
             {filteredOutlets.length > 0 ? (
-              filteredOutlets.map((outlet) => (
+              filteredOutlets.map((outlet, index) => (
                 <div
                   key={outlet.id}
                   className="
@@ -115,7 +119,7 @@ export default function OutletLokasi() {
                     <div className="lg:w-[380px] p-8 border-b lg:border-b-0 lg:border-r border-amber-400/20">
                       <div className="space-y-6">
                         <div className="flex h-10 w-10 items-center justify-center rounded-full border border-amber-400 text-amber-400 font-bold">
-                          {outlet.id}
+                          {index + 1}
                         </div>
 
                         <div>
